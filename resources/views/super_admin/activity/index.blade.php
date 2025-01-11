@@ -2,8 +2,8 @@
 @section('title', 'الإدارة المركزية')
 
 @section('style')
-<link rel="stylesheet" href="{{ asset('assets') }}/css/highlight.min.css" />
-<link rel="stylesheet" href="{{ asset('assets') }}/css/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ asset('assets') }}/css/highlight.min.css" />
+    <link rel="stylesheet" href="{{ asset('assets') }}/css/swiper-bundle.min.css" />
 @endsection
 
 @section('content')
@@ -16,52 +16,68 @@
             <span>الكل</span>
         </li>
     </ul>
- <div class="flex flex-wrap mt-3 mb-5 ">
-     <button href="#" class="btn btn-outline-secondary">إضافة</button >
-    
- </div>
+
+       <div class="flex flex-wrap items-center justify-start gap-2  mt-3 mb-5">
+
+           <div x-data="modal">
+               <button class="btn btn-outline-primary " @click="toggle">إرفاق بيانات</button>
+               @include('super_admin.activity.import')
+           </div>
+           <div x-data="modal">
+               <button id="action-button" class="btn btn-outline-primary " style="display: none;" @click="toggle">إستخراج تقرير</button>
+               @include('super_admin.activity.export')
+           </div>
+       </div>
+
+
     <div class="panel mt-5 dark:text-white-light">
 
-    <table id="myTable" class="table-responsive myTable dark:text-white-light">
-        <thead>
-            <tr class="text-center">
-                <th class="wd-10p border-bottom-0">#</th>
-                <th class="wd-25p border-bottom-0">الاسم</th>
-                <th class="wd-25p border-bottom-0">فريق العمل</th>
-                <th class="wd-25p border-bottom-0">عدد مسئول</th>
-                <th class="wd-25p border-bottom-0">م.م مسئول</th>
-                <th class="wd-25p border-bottom-0">عدد مشروع</th>
-                <th class="wd-25p border-bottom-0">م.م مشروع</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($activities as $activity)
-                <tr>
-                    <td class="text-center">{{ $loop->iteration }}</td>
-                    <td class="text-center hover:!text-primary " x-data="modal"><a href="javascript:;" @click="toggle" x-tooltip="عرض">{{ $activity->name }}</a></td>
-                    <td class="text-center">
-                        <div class="w-full h-4 bg-[#ebedf2] dark:bg-dark/40 rounded-full">
-                            <div class="bg-gradient-to-r from-[#3cba92] to-[#0ba360] h-4 rounded-full w-8/12 text-center text-white flex justify-between items-center px-2 text-xs"><span>{{ ($activity->getMasaolCount() + $activity->getMashroaaMasaolCount()) ?? 0 }}</span><span>90%</span></div>
-                        </div>
-                        
-                    </td>
-                    <td class="text-center">{{ $activity->getMasaolCount() ?? 0 }}</td>
-                    <td class="text-center">{{ $activity->getMasaolCountAttribute() ?? 0 }}</td>
-                    <td class="text-center">{{ $activity->getMashroaaMasaolCount() ?? 0 }}</td>
-                    <td class="text-center">{{ $activity->getMashroaaMasaolCountAttribute() ?? 0 }}</td>
-
+        <table id="myTable" class="table-responsive myTable dark:text-white-light">
+            <thead>
+                <tr class="text-center">
+                    <th><input type="checkbox" class="form-checkbox" id="all" /></th>
+                    <th class="wd-10p border-bottom-0">#</th>
+                    <th class="wd-25p border-bottom-0">الاسم</th>
+                    <th class="wd-25p border-bottom-0">فريق العمل</th>
+                    <th class="wd-25p border-bottom-0">عدد مسئول</th>
+                    <th class="wd-25p border-bottom-0">م.م مسئول</th>
+                    <th class="wd-25p border-bottom-0">عدد مشروع</th>
+                    <th class="wd-25p border-bottom-0">م.م مشروع</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($activities as $activity)
+                    <tr>
+                        <td><input value="{{ $activity->id }}" type="checkbox" class="form-checkbox item" /></td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td class="text-center hover:!text-primary  " x-data="modal"><a href="javascript:;"
+                                @click="toggle" x-tooltip="عرض">{{ $activity->name }}</a></td>
+                        <td class="text-center">
+                            <div class="w-full h-4 bg-[#ebedf2] dark:bg-dark/40 rounded-full">
+                                <div
+                                    class="bg-gradient-to-r from-[#3cba92] to-[#0ba360] h-4 rounded-full w-8/12 text-center text-white flex justify-between items-center px-2 text-xs">
+                                    <span>{{ $activity->getMasaolCount() + $activity->getMashroaaMasaolCount() ?? 0 }}</span><span>90%</span>
+                                </div>
+                            </div>
+
+                        </td>
+                        <td class="text-center">{{ $activity->getMasaolCount() ?? 0 }}</td>
+                        <td class="text-center">{{ $activity->getMasaolCountAttribute() ?? 0 }}</td>
+                        <td class="text-center">{{ $activity->getMashroaaMasaolCount() ?? 0 }}</td>
+                        <td class="text-center">{{ $activity->getMashroaaMasaolCountAttribute() ?? 0 }}</td>
+
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-    @if(session('success'))
+    @if (session('success'))
         <script>
             Swal.fire({
                 toast: true,
                 position: 'bottom-start',
                 icon: 'success',
-                title: '{{ session("success") }}', // رسالة النجاح من الجلسة
+                title: '{{ session('success') }}', // رسالة النجاح من الجلسة
                 showConfirmButton: false,
                 timer: 3000
             });
@@ -69,7 +85,7 @@
     @endif
 @endsection
 @section('script')
-<script src="{{ asset('assets') }}/js/swiper-bundle.min.js"></script>
+    <script src="{{ asset('assets') }}/js/swiper-bundle.min.js"></script>
 
     <script>
         const swiper1 = new Swiper(".slider1", {
@@ -82,7 +98,7 @@
                 clickable: true,
             },
         });
-        </script>
+    </script>
 
     <script src="{{ asset('assets') }}/js/simple-datatables.js"></script>
     <script>
@@ -127,6 +143,46 @@
 
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAllCheckbox = document.getElementById('all');
+            const itemCheckboxes = document.querySelectorAll('.item');
+            const hiddenInput = document.getElementById('activity-ids');
+            const exportButton = document.getElementById('action-button');
+
+            function updateHiddenInput() {
+                const selectedIds = Array.from(itemCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                hiddenInput.value = selectedIds.join(',');
+
+                // إظهار الزر إذا تم اختيار عناصر
+                if (selectedIds.length > 0) {
+                    exportButton.style.display = 'block';
+                } else {
+                    exportButton.style.display = 'none';
+                }
+            }
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    itemCheckboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                    updateHiddenInput();
+                });
+            }
+
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateHiddenInput);
+            });
+
+            updateHiddenInput();
+        });
+    </script>
+
+
+
 
 @endsection
 <style>

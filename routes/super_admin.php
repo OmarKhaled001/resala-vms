@@ -25,9 +25,12 @@ Route::middleware( ['auth:super_admin'])->group(function(){
     Route::group(
         ['prefix' => 'activity', 'as' => 'activity.'],
         function () {
-            Route::get('/all', [ActivityController::class, 'allActivity'])->name('index');
-            Route::get('/create', [ActivityController::class, 'showForm'])->name('create');
-            Route::post('/create', [ActivityController::class, 'storeActivity'])->name('store');
+            Route::get('/all',     [ActivityController::class, 'allActivity'])   ->name('index');
+            Route::get('/create',  [ActivityController::class, 'showForm'])      ->name('create');
+            Route::post('/create', [ActivityController::class, 'storeActivity']) ->name('store');
+            Route::get('/sheet',   [ActivityController::class, 'sheet'])          ->name('sheet');
+            Route::post('/export', [ActivityController::class, 'export'])        ->name('export');
+            Route::post('/import', [ActivityController::class, 'import'])        ->name('import');
         }
     );
 

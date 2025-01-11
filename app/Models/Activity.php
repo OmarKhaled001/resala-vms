@@ -63,46 +63,64 @@ class Activity extends Model
     public function getMasaolCount()
     {
         return $this->volunteers()->where('type','مسئول')
-        ->count() ;
+        ->count() ?? null ;
     }
     
     public function getMashroaaMasaolCount()
     {
         return $this->volunteers()->where('type','مشروع مسئول')
-        ->count() ;
+        ->count()?? null ;
     }
     public function getMasaolCountAttributeCount()
     {
         return $this->volunteers()->where('type','مسئول')
-        ->events()
+        ->whereHas('events')
         ->count() ;
     }
     
     public function getMashroaaMasaolCountAttributeCount()
     {
         return $this->volunteers()->where('type','مشروع مسئول')
-        ->events()
+        ->whereHas('events')
         ->count() ;
     }
 
     public function getMasaolCountAttribute()
     {
-        return $this->volunteers()
+        $count = $this->getMasaolCount(); 
+        if ($count == 0) 
+        { 
+            return 0;
+        }
+        return  round(($this->volunteers()
             ->where('type', 'مسئول')
             ->get()
             ->sum(function ($volunteer) {
                 return $volunteer->capped_monthly_participation;
-            });
+            })  /  $count),2);
     }
     
     public function getMashroaaMasaolCountAttribute()
     {
-        return $this->volunteers()
+        $count = $this->getMashroaaMasaolCount(); 
+        if ($count == 0) 
+        { 
+            return 0;
+        }
+        return round(($this->volunteers()
             ->where('type', 'مشروع مسئول')
             ->get()
             ->sum(function ($volunteer) {
                 return $volunteer->capped_monthly_participation;
-            });
+            }) /  $count),2);
+    }
+    public function getNewVolunteersCount()
+    {
+        $startOfMonth = now()->startOfMonth()->toDateString();
+        $endOfMonth = now()->endOfMonth()->toDateString();
+        return $this->volunteers()
+            ->whereBetween('vol_date', [$startOfMonth, $endOfMonth])
+            ->count();
     }
     
 }
