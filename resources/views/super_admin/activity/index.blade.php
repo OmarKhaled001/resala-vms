@@ -32,8 +32,8 @@
             </button>
             <ul x-cloak x-show="open" x-transition x-transition.duration.300ms
                 class="ltr:right-0 rtl:left-0 whitespace-nowrap">
-                <li><a href="javascript:;" id="delete-button" onclick="confirmDelete()">حذف</a></li>
-                <li x-data="modal"><a href="javascript:;" @click="toggle">استخراج تقرير</a>
+                <li><a href="javascript:;" id="delete-button" class="text-danger" onclick="confirmDelete()">حذف</a></li>
+                <li x-data="modal"><a href="javascript:;" @click="toggle" class="z-50">استخراج تقرير</a>
                     @include('super_admin.activity.export')</li>
             </ul>
         </div>
@@ -62,22 +62,26 @@
             </thead>
             <tbody>
                 @foreach ($activities as $activity)
+                @php
+                    $teemCount= $activity->getMasaolCount() + $activity->getMashroaaMasaolCount() ;
+                    $teemCountAttributeCount = $activity->getMasaolCountAttributeCount() + $activity->getMashroaaMasaolCountAttributeCount();
+                    $percentage = ($teemCount == 0) ? 0 : round((($teemCountAttributeCount / $teemCount) * 100),2);
+                    @endphp
                     <tr>
                         <td><input value="{{ $activity->id }}" type="checkbox" class="form-checkbox item" /></td>
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center hover:!text-primary  " x-data="modal"><a href="javascript:;"
-                                @click="toggle" x-tooltip="عرض">{{ $activity->name }}</a></td>
+                        @click="toggle" x-tooltip="عرض">{{ $activity->name }}</a></td>
                         <td class="text-center">{{ $activity->sections->count() ?? 0 }}</td>
                         <td class="text-center">{{ $activity->getMasaolCount() ?? 0 }}</td>
                         <td class="text-center">{{ $activity->getMashroaaMasaolCount() ?? 0 }}</td>
                         <td class="text-center">
-                            <div class="w-full h-4 bg-[#ebedf2] dark:bg-dark/40 rounded-full">
+                            <div  x-tooltip="{{ $teemCount.' / '.$teemCountAttributeCount  ?? 0 }}" class="w-full h-4 bg-[#ebedf2] dark:bg-dark/40 rounded-full">
                                 <div
-                                    class="bg-gradient-to-r from-[#3cba92] to-[#0ba360] h-4 rounded-full w-8/12 text-center text-white flex justify-between items-center px-2 text-xs">
-                                    <span>{{ $activity->getMasaolCount() + $activity->getMashroaaMasaolCount() ?? 0 }}</span><span>90%</span>
+                                    class="bg-gradient-to-r {{$percentage == 100 ? 'from-[#3cba92] to-[#0ba360]' : 'from-[#4361ee] to-[#805dca] ' }} h-4 rounded-full  text-center text-white flex justify-between items-center px-2 text-xs"  style="width: {{ $percentage }}%">
+                                    <span>{{  $percentage }}%</span>
                                 </div>
                             </div>
-
                         </td>
                         <td class="text-center">
                             <ul class="flex items-center justify-center gap-2">
