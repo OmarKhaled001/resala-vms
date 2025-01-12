@@ -9,7 +9,7 @@
             </div>
             <form action="{{ route('super_admin.activity.export') }}" method="POST">
             @csrf
-            <input type="hidden" name="ids" id="activity-ids" value="" />
+            <input type="hidden" name="ids" class="activity-ids" value="" />
             <div class="p-5">
                 <label class="inline-flex my-4">
                     

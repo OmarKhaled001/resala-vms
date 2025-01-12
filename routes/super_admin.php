@@ -25,12 +25,16 @@ Route::middleware( ['auth:super_admin'])->group(function(){
     Route::group(
         ['prefix' => 'activity', 'as' => 'activity.'],
         function () {
-            Route::get('/all',     [ActivityController::class, 'allActivity'])   ->name('index');
-            Route::get('/create',  [ActivityController::class, 'showForm'])      ->name('create');
-            Route::post('/create', [ActivityController::class, 'storeActivity']) ->name('store');
-            Route::get('/sheet',   [ActivityController::class, 'sheet'])          ->name('sheet');
-            Route::post('/export', [ActivityController::class, 'export'])        ->name('export');
-            Route::post('/import', [ActivityController::class, 'import'])        ->name('import');
+            Route::get('/all',                 [ActivityController::class, 'allActivity'])        ->name('index');
+            Route::get('/create',              [ActivityController::class, 'createForm'])         ->name('create');
+            Route::post('/create',             [ActivityController::class, 'storeActivity'])      ->name('store');
+            Route::get('/edit/{id}',           [ActivityController::class, 'editForm'])           ->name('edit');
+            Route::post('/edit',               [ActivityController::class, 'updateActivity'])     ->name('update');
+            Route::get('/sheet',               [ActivityController::class, 'sheet'])              ->name('sheet');
+            Route::post('/export',             [ActivityController::class, 'export'])             ->name('export');
+            Route::post('/import',             [ActivityController::class, 'import'])             ->name('import');
+            Route::post('/delete/{activity}',  [ActivityController::class, 'deleteActivity'])     ->name('delete');
+            Route::post('/bulk-delete',        [ActivityController::class, 'deleteActivities'])   ->name('bulk.delete');
         }
     );
 

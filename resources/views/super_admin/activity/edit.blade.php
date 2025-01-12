@@ -9,17 +9,18 @@
             <a href="javascript:;" class="text-primary hover:underline">الانشطة</a>
         </li>
         <li class="before:content-['/'] rtl:before:mr-1 rtl:before:ml-1">
-            <span>إضافة</span>
+            <span>تعديل</span>
         </li>
     </ul>
 </div>
 <div class="panel mt-3">
-    <h5 class="text-lg font-semibold dark:text-white-light">إضافة نشاط</h5>
+    <h5 class="text-lg font-semibold dark:text-white-light">تعديل نشاط {{ $activity->name }}</h5>
 
-    <form class="mt-5" autocomplete="off" action="{{ route('super_admin.activity.store') }}" method="POST">
+    <form class="mt-5" autocomplete="off" action="{{ route('super_admin.activity.update') }}" method="POST">
         @csrf
+        <input type="hidden" name="id" value="{{ $activity->id }}">
        @include('super_admin.activity.form')
-        <button type="submit" class="btn btn-primary mt-6">إضافة</button>
+        <button type="submit" class="btn btn-primary mt-6">تعديل</button>
     </form>
 
 </div>
