@@ -13,8 +13,11 @@ use App\Http\Controllers\Volunteer\VolunteerController;
 Livewire::setUpdateRoute(function ($handle) {
     return Route::post('/custom/livewire/update', $handle);
 });
-Route::get('/login', [AuthController::class, 'loginView'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::middleware('guest:volunteer')->group(function () {
+    Route::get('/login', [AuthController::class, 'loginView'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+});
+
 Route::middleware(['auth:volunteer'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     // event

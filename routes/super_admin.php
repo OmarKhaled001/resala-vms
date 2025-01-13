@@ -7,6 +7,10 @@ use App\Http\Controllers\SuperAdmin\SectionController;
 use App\Http\Controllers\SuperAdmin\ActivityController;
 
 
+Route::middleware('guest:super_admin')->group(function () {
+    Route::get('/login', [AuthController::class, 'loginView'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+});
 
 
 Route::get('/login', [AuthController::class, 'loginView'])->name('login');
