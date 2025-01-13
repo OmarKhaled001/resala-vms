@@ -22,7 +22,7 @@
             <button class="btn btn-outline-primary" @click="toggle">إستيراد</button>
             @include('super_admin.activity.import')
         </div>
-        <div x-data="dropdown" @click.outside="open = false" class="dropdown" id="action-button">
+        <div x-data="dropdown" @click.outside="open = false" class="dropdown" style="z-index:50;" id="action-button">
             <button class="btn btn-primary dropdown-toggle" @click="toggle">إجراءات
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                     class="inline-block h-4 w-4 ltr:ml-1 rtl:mr-1">
@@ -33,7 +33,7 @@
             <ul x-cloak x-show="open" x-transition x-transition.duration.300ms
                 class="ltr:right-0 rtl:left-0 whitespace-nowrap">
                 <li><a href="javascript:;" id="delete-button" class="text-danger" onclick="confirmDelete()">حذف</a></li>
-                <li x-data="modal"><a href="javascript:;" @click="toggle" class="z-50">استخراج تقرير</a>
+                <li x-data="modal"><a href="javascript:;" @click="toggle">استخراج تقرير</a>
                     @include('super_admin.activity.export')</li>
             </ul>
         </div>
