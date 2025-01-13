@@ -154,6 +154,10 @@
                                
                                     <li>
                                         <a href="{{ route('super_admin.section.create') }}" 
+                                        class="{{ request()->routeIs('super_admin.section.create') ? 'active' : '' }}">الكل</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('super_admin.section.create') }}" 
                                         class="{{ request()->routeIs('super_admin.section.create') ? 'active' : '' }}">إضافة</a>
                                     </li>
                                
