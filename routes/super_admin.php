@@ -5,7 +5,7 @@ use App\Http\Controllers\SuperAdmin\AuthController;
 use App\Http\Controllers\SuperAdmin\PageController;
 use App\Http\Controllers\SuperAdmin\SectionController;
 use App\Http\Controllers\SuperAdmin\ActivityController;
-
+use App\Http\Controllers\SuperAdmin\ContributionController;
 
 Route::middleware('guest:super_admin')->group(function () {
     Route::get('/login', [AuthController::class, 'loginView'])->name('login');
@@ -27,12 +27,21 @@ Route::middleware( ['auth:super_admin'])->group(function(){
         }
     );
     Route::group(
+        ['prefix' => 'contribution', 'as' => 'contribution.'],
+        function () {
+            Route::get('/',                        [ContributionController::class, 'allContribution'])      ->name('index');
+            Route::post('/create',                 [ContributionController::class, 'storeContribution'])    ->name('store');
+            Route::post('/update',                 [ContributionController::class, 'updateContribution'])   ->name('update');
+            Route::post('/delete/{contribution}',  [ContributionController::class, 'destroyContribution'])  ->name('destroy');
+        }
+    );
+    Route::group(
         ['prefix' => 'activity', 'as' => 'activity.'],
         function () {
-            Route::get('/all',                 [ActivityController::class, 'allActivity'])        ->name('index');
+            Route::get('/',                    [ActivityController::class, 'allActivity'])        ->name('index');
             Route::get('/create',              [ActivityController::class, 'createForm'])         ->name('create');
             Route::post('/create',             [ActivityController::class, 'storeActivity'])      ->name('store');
-            Route::get('/edit/{id}',           [ActivityController::class, 'editForm'])           ->name('edit');
+            Route::get('/edit/{activity}',     [ActivityController::class, 'editForm'])           ->name('edit');
             Route::post('/edit',               [ActivityController::class, 'updateActivity'])     ->name('update');
             Route::get('/sheet',               [ActivityController::class, 'sheet'])              ->name('sheet');
             Route::post('/export',             [ActivityController::class, 'export'])             ->name('export');

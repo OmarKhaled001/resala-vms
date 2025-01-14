@@ -130,7 +130,7 @@
                 
             </li>
             <li class="nav-item">
-                <ul x-data="{ activeDropdown: '{{ request()->routeIs('super_admin.section.*') ? 'section' : '' }}' }">
+                <ul x-data="{ activeDropdown: '{{ (request()->routeIs('super_admin.section.*') or request()->routeIs('super_admin.contribution.*') ) ? 'section' : '' }}' }">
                     <li class="nav-item">
                         <ul>
                             <li class="menu nav-item">
@@ -162,8 +162,8 @@
                                     </li>
                                
                                     <li>
-                                        <a href="{{ route('super_admin.section.create') }}" 
-                                        class="{{ request()->routeIs('super_admin.section.create') ? 'active' : '' }}">المشاركات</a>
+                                        <a href="{{ route('super_admin.contribution.index') }}" 
+                                        class="{{ request()->routeIs('super_admin.contribution.index') ? 'active' : '' }}">المشاركات</a>
                                     </li>
                                  
                                 </ul>
