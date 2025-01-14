@@ -29,16 +29,24 @@ class ActivityController extends Controller
 
     public function storeActivity(ActivityRequest $request)
     {
-        $validatedData = $request->validated(); 
-        $activity = new Activity();
-        $activity->name = $validatedData['name'];
-        $activity->username = $validatedData['username'];
-        $activity->email = $validatedData['email'];
-        $activity->password = bcrypt($validatedData['password']);
-        $activity->save();
-        $activity->sections()->sync($validatedData['section_id']);
-        return redirect()->back()->with('success', 'تم الإنشاء بنجاح!');
+        try {
+            $validatedData = $request->validated(); 
+    
+            $activity = new Activity();
+            $activity->name = $validatedData['name'];
+            $activity->username = $validatedData['username'];
+            $activity->email = $validatedData['email'];
+            $activity->password = bcrypt($validatedData['password']);
+            $activity->save();
+    
+            $activity->sections()->sync($validatedData['section_id']);
+    
+            return redirect()->route('super_admin.activity.index')->with('success', 'تم الإنشاء بنجاح!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء عملية الإنشاء: ' . $e->getMessage());
+        }
     }
+    
 
     public function export(Request $request)
     {
@@ -206,20 +214,27 @@ class ActivityController extends Controller
 
     public function updateActivity(ActivityRequest $request)
     {
-        $validatedData = $request->validated();
-
-        $activity = Activity::findOrFail($request->id);
-        $activity->name = $validatedData['name'];
-        $activity->username = $validatedData['username'];
-        $activity->email = $validatedData['email'];
-        if (!empty($validatedData['password'])) {
-            $activity->password = bcrypt($validatedData['password']);
+        try {
+            $validatedData = $request->validated();
+    
+            $activity = Activity::findOrFail($request->id);
+            $activity->name = $validatedData['name'];
+            $activity->username = $validatedData['username'];
+            $activity->email = $validatedData['email'];
+    
+            if (!empty($validatedData['password'])) {
+                $activity->password = bcrypt($validatedData['password']);
+            }
+    
+            $activity->save();
+            $activity->sections()->sync($validatedData['section_id']);
+    
+            return redirect()->route('super_admin.activity.index')->with('success', 'تم التعديل بنجاح!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء عملية التعديل: ' . $e->getMessage());
         }
-        $activity->save();
-        $activity->sections()->sync($validatedData['section_id']);
-
-        return redirect()->back()->with('success', 'تم التعديل بنجاح!');
     }
+    
 
     public function sheet()
     {

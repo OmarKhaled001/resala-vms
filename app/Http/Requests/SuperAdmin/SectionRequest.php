@@ -12,7 +12,7 @@ class SectionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,27 +22,27 @@ class SectionRequest extends FormRequest
      */
     public function rules()
     {
-        $sectionId = $this->input('id'); // الحصول على الـ ID من الطلب
+        $sectionId = $this->input('id');
 
         $rules = [
             'name' => 'required|string|max:255',
-            'description' => 'string',
             'username' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('activities', 'username')->ignore($sectionId),
+                Rule::unique('sections', 'username')->ignore($sectionId),
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('activities', 'email')->ignore($sectionId),
+                Rule::unique('sections', 'email')->ignore($sectionId),
             ],
-            'section_id' => 'required|array',
-            'section_id.*' => 'exists:sections,id',
+            'contribution_id' => 'required|array',
+            'contribution_id.*' => 'exists:contributions,id', // التأكد من أن المساهمات موجودة
         ];
 
-        $rules['password'] =  !$sectionId ? 'required|string|min:8|confirmed' : 'nullable|string|min:8|confirmed';
+        // تأكيد كلمة المرور عند الإنشاء فقط، وجعلها اختيارية عند التحديث
+        $rules['password'] = !$sectionId ? 'required|string|min:8|confirmed' : 'nullable|string|min:8|confirmed';
 
         return $rules;
     }
@@ -53,24 +53,22 @@ class SectionRequest extends FormRequest
             'name.required' => 'حقل الاسم مطلوب.',
             'name.string' => 'الاسم يجب أن يكون نصًا.',
             'name.max' => 'الاسم يجب ألا يزيد عن 255 حرفًا.',
-            
-            'description.string' => 'الاسم يجب أن يكون نصًا.',
 
             'username.required' => 'حقل اسم المستخدم مطلوب.',
             'username.string' => 'اسم المستخدم يجب أن يكون نصًا.',
             'username.max' => 'اسم المستخدم يجب ألا يزيد عن 255 حرفًا.',
             'username.unique' => 'اسم المستخدم مُستخدم بالفعل.',
-    
+
             'email.required' => 'حقل البريد الإلكتروني مطلوب.',
             'email.email' => 'البريد الإلكتروني يجب أن يكون بصيغة صحيحة.',
             'email.unique' => 'البريد الإلكتروني مُستخدم بالفعل.',
-            
+
             'password.required' => 'حقل كلمة المرور مطلوب.',
             'password.string' => 'كلمة المرور يجب أن تكون نصًا.',
             'password.min' => 'كلمة المرور يجب ألا تقل عن 8 أحرف.',
             'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
 
-            'contribution_id.required' => 'يجب اختيار مشاركة علي الاقل',
+            'contribution_id.required' => 'يجب اختيار مشاركة على الأقل.',
             'contribution_id.exists' => 'القيمة المحددة للمشاركة غير صالحة.',
         ];
     }

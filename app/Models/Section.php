@@ -44,13 +44,27 @@ class Section extends Model
         return $this->belongsToMany(Contribution::class ,'section_contribution')->withTimestamps(); 
     }
     
-    function volunteers()
+    public function volunteers()
     {
         return $this->hasMany(Volunteer::class);
     }
     
-    function events()
+    public function events()
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function getStatusBadgeClass()
+    {
+
+        return $this->is_active  ? 'bg-success' : 'bg-danger';
+
+    }
+
+
+    public function getStatusLabel()
+    {
+        return $this->is_active  ? 'مفعلة' : 'غير مفعلة';
+   
     }
 }

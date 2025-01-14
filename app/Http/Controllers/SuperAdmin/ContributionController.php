@@ -40,7 +40,7 @@ class ContributionController extends Controller
             $contribution->is_active = $validatedData['is_active'] ?? 1;
             $contribution->save();
     
-            return redirect()->back()->with('success', 'تم الإنشاء بنجاح!');
+            return redirect()->route('super_admin.contribution.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
         }
@@ -73,7 +73,7 @@ class ContributionController extends Controller
             $contribution->is_active = $validatedData['is_active'] ?? 0;
             $contribution->save();
 
-            return redirect()->back()->with('success', 'تم التحديث بنجاح!');
+            return redirect()->route('super_admin.contribution.index')->with('success', 'تم التحديث بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء التحديث: ' . $e->getMessage());
         }

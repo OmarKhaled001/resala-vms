@@ -34,13 +34,6 @@ class Contribution extends Model
         return $this->hasMany(Event::class);
     }
 
-    public function getStatusBadgeClass()
-    {
-
-        return $this->is_active  ? 'bg-success' : 'bg-danger';
-
-    }
-
     public function getTypeBadgeClass()
     {
 
@@ -53,6 +46,14 @@ class Contribution extends Model
  
         return $this->value  == 2 ? 'من المنزل' :  'ميدانية' ;
     }
+
+    public function getStatusBadgeClass()
+    {
+
+        return $this->is_active  ? 'bg-success' : 'bg-danger';
+
+    }
+
 
     public function getStatusLabel()
     {

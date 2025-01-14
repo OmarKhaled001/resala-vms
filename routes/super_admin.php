@@ -19,22 +19,31 @@ Route::middleware( ['auth:super_admin'])->group(function(){
     
     Route::get('/',[PageController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    //------- Section --------//
     Route::group(
         ['prefix' => 'section', 'as' => 'section.'],
         function () {
-            Route::get('/create', [SectionController::class, 'showForm'])->name('create');
-            Route::post('/create', [SectionController::class, 'storeSection'])->name('store');
+            Route::get('/',                    [SectionController::class, 'allSection'])            ->name('index');
+            Route::get('/create',              [SectionController::class, 'createForm'])            ->name('create');
+            Route::post('/create',             [SectionController::class, 'storeSection'])          ->name('store');
+            Route::get('/edit/{section}',      [SectionController::class, 'editForm'])              ->name('edit');
+            Route::post('/edit',               [SectionController::class, 'updateSection'])         ->name('update');
+            Route::post('/delete/{section}',   [SectionController::class, 'destroySection'])        ->name('destroy');
+            
         }
     );
+    //------- Contribution --------//
     Route::group(
         ['prefix' => 'contribution', 'as' => 'contribution.'],
         function () {
             Route::get('/',                        [ContributionController::class, 'allContribution'])      ->name('index');
             Route::post('/create',                 [ContributionController::class, 'storeContribution'])    ->name('store');
-            Route::post('/update',                 [ContributionController::class, 'updateContribution'])   ->name('update');
+            Route::post('/edit',                   [ContributionController::class, 'updateContribution'])   ->name('update');
             Route::post('/delete/{contribution}',  [ContributionController::class, 'destroyContribution'])  ->name('destroy');
         }
     );
+    //------- Activity --------//
     Route::group(
         ['prefix' => 'activity', 'as' => 'activity.'],
         function () {

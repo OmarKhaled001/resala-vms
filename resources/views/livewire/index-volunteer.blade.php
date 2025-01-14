@@ -253,7 +253,7 @@
                             });
                     },
                     maxOptions: 1000, // الحد الأقصى للعناصر المعروضة في القائمة
-                    placeholder: "اختار متطوعين الحدث...", // النص الافتراضي
+                    placeholder: "اختر متطوعين الحدث...", // النص الافتراضي
                     render: {
                         option: function(data, escape) {
                             return `<div class="custom-option">${escape(data.name)}</div>`;

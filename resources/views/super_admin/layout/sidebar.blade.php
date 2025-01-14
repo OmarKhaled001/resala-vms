@@ -153,8 +153,8 @@
                                 <ul x-show="activeDropdown === 'section'" x-collapse="" class="sub-menu text-gray-500" style="display: block;">
                                
                                     <li>
-                                        <a href="{{ route('super_admin.section.create') }}" 
-                                        class="{{ request()->routeIs('super_admin.section.create') ? 'active' : '' }}">الكل</a>
+                                        <a href="{{ route('super_admin.section.index') }}" 
+                                        class="{{ request()->routeIs('super_admin.section.index') ? 'active' : '' }}">الكل</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('super_admin.section.create') }}" 

@@ -29,7 +29,7 @@
 </div>
 <label class="inline-flex my-4">
     <input type="checkbox" class="form-checkbox rounded-4" id="select-all" />
-    <label class="ml-5">اختار اللجان</label>
+    <label class="ml-5">اختر اللجان</label>
 </label>
 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
     @foreach ($sections as $section)
