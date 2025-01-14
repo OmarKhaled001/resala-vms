@@ -23,26 +23,26 @@
         <table id="myTable" class="table-responsive myTable dark:text-white-light">
             <thead>
                 <tr class="text-center">
-                    <th class="wd-10p border-bottom-0">#</th>
-                    <th class="wd-25p border-bottom-0">الاسم</th>
-                    <th class="wd-25p border-bottom-0">وصف</th>
-                    <th class="wd-25p border-bottom-0">الحالة</th>
-                    <th class="wd-25p border-bottom-0">الاجرائات</th>
+                    <th class="wd-10p text-center border-bottom-0">#</th>
+                    <th class="wd-25p text-center border-bottom-0">الاسم</th>
+                    <th class="wd-25p text-center border-bottom-0">وصف</th>
+                    <th class="wd-25p text-center border-bottom-0">الحالة</th>
+                    <th class="wd-25p text-center border-bottom-0">الاجرائات</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($sections as $section)
                     <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center">{{ $section->name }}</td>
-                        <td class="text-center">{{ $section->description ?? 'لا يوجد' }}</td>
-                        <td class="text-center">
+                        <td style="text-align: center;">{{ $loop->iteration }}</td>
+                        <td style="text-align: center;">{{ $section->name }}</td>
+                        <td style="text-align: center;">{{ $section->description ?? 'لا يوجد' }}</td>
+                        <td style="text-align: center;">
                             <span class="badge {{ $section->getStatusBadgeClass() }}">
                                 {{ $section->getStatusLabel() }}
                             </span>
                         </td>
 
-                        <td class="text-center">
+                        <td style="text-align: center;">
                             <ul class="flex items-center justify-center gap-2">
                                 <li x-data="modal">
                                     <a href="{{ route('super_admin.section.edit',$section->id) }}" @click="toggle" x-tooltip=" تعديل" class="hover:text-info">

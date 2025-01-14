@@ -57,4 +57,34 @@ class Branch extends Authenticatable
     {
         return $this->morphMany(CommentRead::class, 'reader');
     }
+
+    public function getMonthlyEventCount()
+    {
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        return $this->events()
+        ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
+        ->count() ;
+      
+
+    }
+
+    public function getMonthlyEventConformingCount()
+    {
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        return $this->events()
+        ->where('status','conforming')
+        ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
+        ->count() ;
+    }
+
+    public function getNewVolunteersCount()
+    {
+        $startOfMonth = now()->startOfMonth()->toDateString();
+        $endOfMonth = now()->endOfMonth()->toDateString();
+        return $this->volunteers()
+            ->whereBetween('vol_date', [$startOfMonth, $endOfMonth])
+            ->count();
+    }
 }

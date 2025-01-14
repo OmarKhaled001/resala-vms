@@ -49,7 +49,7 @@
                 <span>الهيكل</span>
             </h2>
             <li class="nav-item">
-                <ul x-data="{ activeDropdown: '{{ request()->routeIs('volunteer.event.*') ? 'branches' : '' }}' }">
+                <ul x-data="{ activeDropdown: '{{ request()->routeIs('super_admin.branch.*') ? 'branches' : '' }}' }">
                     <li class="nav-item">
                         <ul>
                             <li class="menu nav-item">
@@ -71,16 +71,12 @@
                                 </button>
                                 <ul x-show="activeDropdown === 'branches'" x-collapse="" class="sub-menu text-gray-500" style="display: block;">
                                     <li>
-                                        <a href="{{ route('volunteer.event.index') }}" 
-                                           class="{{ request()->routeIs('volunteer.event.index') ? 'active' : '' }}">الكل</a>
+                                        <a href="{{ route('super_admin.branch.index') }}" 
+                                           class="{{ request()->routeIs('super_admin.branch.index') ? 'active' : '' }}">الكل</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('volunteer.event.create') }}" 
-                                        class="{{ request()->routeIs('volunteer.event.create') ? 'active' : '' }}">إضافة</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('volunteer.event.index') }}" 
-                                           class="{{ request()->routeIs('volunteer.event.index') ? 'active' : '' }}">احصائيات</a>
+                                        <a href="{{ route('super_admin.branch.create') }}" 
+                                        class="{{ request()->routeIs('super_admin.branch.create') ? 'active' : '' }}">إضافة</a>
                                     </li>
                                 </ul>
                             </li>

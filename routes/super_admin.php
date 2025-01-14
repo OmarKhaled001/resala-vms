@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdmin\AuthController;
 use App\Http\Controllers\SuperAdmin\PageController;
+use App\Http\Controllers\SuperAdmin\BranchController;
 use App\Http\Controllers\SuperAdmin\SectionController;
 use App\Http\Controllers\SuperAdmin\ActivityController;
 use App\Http\Controllers\SuperAdmin\ContributionController;
@@ -20,6 +21,19 @@ Route::middleware( ['auth:super_admin'])->group(function(){
     Route::get('/',[PageController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    //------- Branch --------//
+    Route::group(
+        ['prefix' => 'branch', 'as' => 'branch.'],
+        function () {
+            Route::get('/',                    [BranchController::class, 'allBranch'])             ->name('index');
+            Route::get('/create',              [BranchController::class, 'createForm'])            ->name('create');
+            Route::post('/create',             [BranchController::class, 'storeBranch'])           ->name('store');
+            Route::get('/edit/{branch}',       [BranchController::class, 'editForm'])              ->name('edit');
+            Route::post('/edit',               [BranchController::class, 'updateBranch'])          ->name('update');
+            Route::post('/delete/{branch}',    [BranchController::class, 'destroyBranch'])         ->name('destroy');
+            
+        }
+    );
     //------- Section --------//
     Route::group(
         ['prefix' => 'section', 'as' => 'section.'],

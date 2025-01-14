@@ -10,50 +10,52 @@
 
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <a href="javascript:;" class="text-primary hover:underline">المشاركات </a>
+            <a href="javascript:;" class="text-primary hover:underline">الفروع </a>
         </li>
         <li class="before:content-['/'] rtl:before:mr-1 rtl:before:ml-1">
             <span>الكل</span>
         </li>
     </ul>
     <div class="flex flex-wrap mt-3 mb-5 " x-data="modal">
-        <button @click="toggle" class="btn btn-outline-primary">إضافة</button>
-        @include('super_admin.contribution.create')
+        <a href="{{ route('super_admin.section.create') }}" class="btn btn-outline-primary">إضافة</a>
     </div>
     <div class="panel mt-5 dark:text-white-light">
         <table id="myTable" class="table-responsive myTable dark:text-white-light">
             <thead>
-                <tr class="text-center">
+                <tr >
                     <th class="wd-10p text-center border-bottom-0">#</th>
                     <th class="wd-25p text-center border-bottom-0">الاسم</th>
-                    <th class="wd-25p text-center border-bottom-0">النوع</th>
-                    <th class="wd-25p text-center border-bottom-0">وصف</th>
-                    <th class="wd-25p text-center border-bottom-0">الحالة</th>
+                    <th class="wd-25p text-center border-bottom-0">الانشطة</th>
+                    <th class="wd-25p text-center border-bottom-0">الاحداث</th>
+                    <th class="wd-25p text-center border-bottom-0">المتطوعين الجدد</th>
                     <th class="wd-25p text-center border-bottom-0">الاجرائات</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($contributions as $contribution)
+                @foreach ($branches as $branch)
+                    @php
+                        $eventCount = $branch->getMonthlyEventCount() ?? 0;
+                        $eventConformingCount = $branch->getMonthlyEventConformingCount();
+                        $percentage = ($eventCount == 0) ? 0 : round((($eventConformingCount / $eventCount) * 100),2);
+                    @endphp
                     <tr>
                         <td style="text-align: center;">{{ $loop->iteration }}</td>
-                        <td style="text-align: center;">{{ $contribution->name }}</td>
+                        <td style="text-align: center;">{{ $branch->name }}</td>
+                        <td style="text-align: center;">{{ $branch->activities->count()  }}</td>
                         <td style="text-align: center;">
-                            <span class="badge {{ $contribution->getTypeBadgeClass() }}">
-                                {{ $contribution->getTypeLabel() }}
-                            </span>
+                            <div  x-tooltip="{{ $eventConformingCount.' / '.$eventCount  ?? 0 }}" class="w-full h-4 bg-[#ebedf2] dark:bg-dark/40 rounded-full">
+                                <div
+                                class="bg-gradient-to-r {{$percentage == 100 ? 'from-[#3cba92] to-[#0ba360]' : 'from-[#4361ee] to-[#805dca] ' }} h-4 rounded-full  text-center text-white flex justify-between items-center px-2 text-xs"  style="width: {{ $percentage }}%">
+                                <span>{{  $percentage }}%</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">{{ $branch->getNewVolunteersCount() }}</td>
 
-                        </td>
-                        <td style="text-align: center;">{{ $contribution->description ?? 'لا يوجد' }}</td>
-                        <td style="text-align: center;">
-                            <span class="badge {{ $contribution->getStatusBadgeClass() }}">
-                                {{ $contribution->getStatusLabel() }}
-                            </span>
-                        </td>
-
-                        <td style="text-align: center;">
+                        <td class="text-center">
                             <ul class="flex items-center justify-center gap-2">
                                 <li x-data="modal">
-                                    <a @click="toggle" x-tooltip=" تعديل" class="hover:text-info">
+                                    <a href="{{ route('super_admin.branch.edit',$branch->id) }}" @click="toggle" x-tooltip=" تعديل" class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
                                             <path opacity="0.5"
@@ -67,13 +69,11 @@
                                                 stroke="currentColor" stroke-width="1.5"></path>
                                         </svg>
                                     </a>
-                                    @include('super_admin.contribution.edit')
-
                                 </li>
 
                                 <li>
                                     <a href="javascript:;" x-tooltip="حذف"
-                                        @click="showDeleteAlert({{ $contribution->id }})">
+                                        @click="showDeleteAlert({{ $branch->id }})">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
                                             <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5"
@@ -149,7 +149,7 @@
     </script>
     <script>
         async function showDeleteAlert(id) {
-            const url = "{{ route('super_admin.contribution.destroy', ['contribution' => ':id']) }}".replace(':id',
+            const url = "{{ route('super_admin.branch.destroy', ['branch' => ':id']) }}".replace(':id',
                 id);
 
             new window.Swal({
