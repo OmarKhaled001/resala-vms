@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdmin\AuthController;
 use App\Http\Controllers\SuperAdmin\PageController;
+use App\Http\Controllers\SuperAdmin\RoleController;
+use App\Http\Controllers\SuperAdmin\UserController;
 use App\Http\Controllers\SuperAdmin\BranchController;
 use App\Http\Controllers\SuperAdmin\SectionController;
 use App\Http\Controllers\SuperAdmin\ActivityController;
@@ -20,6 +22,31 @@ Route::middleware( ['auth:super_admin'])->group(function(){
     
     Route::get('/',[PageController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::middleware( ['role:owner'])->group(function(){
+        //------- User --------//
+        Route::group(
+            ['prefix' => 'user', 'as' => 'user.'],
+            function () {
+                Route::get('/',                        [UserController::class, 'allUser'])      ->name('index');
+                Route::post('/create',                 [UserController::class, 'storeUser'])    ->name('store');
+                Route::post('/edit',                   [UserController::class, 'updateUser'])   ->name('update');
+                Route::post('/delete/{user}',          [UserController::class, 'destroyUser'])  ->name('destroy');
+            }
+        );
+
+        //------- Role and Permeation --------//
+        Route::group(
+            ['prefix' => 'role', 'as' => 'role.'],
+            function () {
+                Route::get('/',                    [RoleController::class, 'allRole'])             ->name('index');
+                Route::get('/create',              [RoleController::class, 'createForm'])          ->name('create');
+                Route::post('/create',             [RoleController::class, 'storeRole'])           ->name('store');
+                Route::get('/edit/{role}',         [RoleController::class, 'editForm'])            ->name('edit');
+                Route::post('/edit',               [RoleController::class, 'updateRole'])          ->name('update');
+                Route::post('/delete/{role}',      [RoleController::class, 'destroyRole'])         ->name('destroy');
+            }
+        );
+    });
 
     //------- Branch --------//
     Route::group(

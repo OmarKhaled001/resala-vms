@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laratrust\Traits\HasRolesAndPermissions;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Volunteer extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory  ,HasRolesAndPermissions;
 
     protected $table = 'volunteers';
     

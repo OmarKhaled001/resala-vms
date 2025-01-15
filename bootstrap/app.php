@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => \App\Http\Middleware\RedirectIfNotAuthenticated::class,
             'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+            'role' => \Laratrust\Middleware\Role::class,
+            'permission' => \Laratrust\Middleware\Permission::class,
+            'ability' => \Laratrust\Middleware\Ability::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
