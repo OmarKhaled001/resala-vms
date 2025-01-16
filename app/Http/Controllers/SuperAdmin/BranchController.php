@@ -4,13 +4,22 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Models\Branch;
 use App\Models\Section;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ActivityLogsService;
 use App\Http\Requests\SuperAdmin\BranchRequest;
-use App\Models\Activity;
 
 class BranchController extends Controller
 {
+
+    protected $ActivityLogsService;
+    public function __construct(ActivityLogsService $ActivityLogsService)
+    {
+        $this->ActivityLogsService = $ActivityLogsService;
+    }
+    
+    
     public function allBranch() 
     {
         $branches = Branch::all();
@@ -44,7 +53,16 @@ class BranchController extends Controller
             $branch->email = $validatedData['email'] ;
             $branch->password = bcrypt($validatedData['password']) ?? bcrypt($validatedData['username']) ;
             $branch->save();
-    
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $branch,
+                'causer' => $causer,
+                'log_name' => 'تم إضافة فرع جديد: ' . $branch->name,
+                'description' => 'تم إنشاء الفرع: ' . $branch->name . ' (اسم المستخدم: ' . $branch->username . '، البريد الإلكتروني: ' . $branch->email . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'إضافة',
+                'guard' => 'super_admin',
+            ]);
+            
             $branch->activities()->sync($validatedData['activity_id']);
     
             return redirect()->route('super_admin.branch.index')->with('success', 'تم الإنشاء بنجاح!');
@@ -68,7 +86,16 @@ class BranchController extends Controller
             }
     
             $branch->save();
-    
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $branch,
+                'causer' => $causer,
+                'log_name' => 'تم تعديل بيانات فرع: ' . $branch->name,
+                'description' => 'تم تعديل بيانات الفرع: ' . $branch->name . ' (اسم المستخدم: ' . $branch->username . '، البريد الإلكتروني: ' . $branch->email . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'تعديل',
+                'guard' => 'super_admin',
+            ]);
+            
             $branch->activities()->sync($validatedData['activity_id']);
     
             return redirect()->route('super_admin.branch.index')->with('success', 'تم الإنشاء بنجاح!');
@@ -81,7 +108,17 @@ class BranchController extends Controller
     {
         try {
             Branch::findOrFail($id)->delete();
-    
+            $branch = Branch::findOrFail($id)->delete();
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $branch,
+                'causer' => $causer,
+                'log_name' => 'تم حذف فرع: ' . $branch->name,
+                'description' => 'تم حذف الفرع: ' . $branch->name . ' (اسم المستخدم: ' . $branch->username . '، البريد الإلكتروني: ' . $branch->email . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'حذف',
+                'guard' => 'super_admin',
+            ]);
+            
             return response()->json(['success' => 'تم حذف اللجنة بنجاح!']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'حدث خطأ أثناء حذف اللجنة: ' . $e->getMessage()], 500);

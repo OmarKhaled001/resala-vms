@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Contribution;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\ActivityLogsService;
 
 class ContributionController extends Controller
 {
+
+    protected $ActivityLogsService;
+    public function __construct(ActivityLogsService $ActivityLogsService)
+    {
+        $this->ActivityLogsService = $ActivityLogsService;
+    }
+    
     public function allContribution()
     {
         $contributions = Contribution::all();
@@ -39,7 +47,16 @@ class ContributionController extends Controller
             $contribution->description = $validatedData['description'];
             $contribution->is_active = $validatedData['is_active'] ?? 1;
             $contribution->save();
-    
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $contribution,
+                'causer' => $causer,
+                'log_name' => 'تم إضافة مساهمة جديدة: ' . $contribution->name,
+                'description' => 'تم إنشاء المساهمة: ' . $contribution->name . ' من نوع: ' . $contribution-> getTypeLabel() . '، الحالة: ' . ($contribution->is_active ? 'نشطة' : 'غير نشطة') . ' بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'إضافة',
+                'guard' => 'super_admin',
+            ]);
+            
             return redirect()->route('super_admin.contribution.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
@@ -72,7 +89,16 @@ class ContributionController extends Controller
             $contribution->description = $validatedData['description'];
             $contribution->is_active = $validatedData['is_active'] ?? 0;
             $contribution->save();
-
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $contribution,
+                'causer' => $causer,
+                'log_name' => 'تم تعديل مساهمة: ' . $contribution->name,
+                'description' => 'تم تعديل بيانات المساهمة: ' . $contribution->name . ' من نوع: ' . $contribution-> getTypeLabel() . '، الحالة: ' . ($contribution->is_active ? 'نشطة' : 'غير نشطة') . ' بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'تعديل',
+                'guard' => 'super_admin',
+            ]);
+            
             return redirect()->route('super_admin.contribution.index')->with('success', 'تم التحديث بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء التحديث: ' . $e->getMessage());
@@ -83,7 +109,17 @@ class ContributionController extends Controller
     {
         try {
             Contribution::findOrFail($id)->delete();
-    
+            $contribution = Contribution::findOrFail($id);
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $contribution,
+                'causer' => $causer,
+                'log_name' => 'تم حذف مساهمة: ' . $contribution->name,
+                'description' => 'تم حذف المساهمة: ' . $contribution->name . ' من نوع: ' . $contribution-> getTypeLabel() . '، الحالة: ' . ($contribution->is_active ? 'نشطة' : 'غير نشطة') . ' بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'حذف',
+                'guard' => 'super_admin',
+            ]);
+            
             return response()->json(['success' => 'تم حذف المشاركة بنجاح!']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'حدث خطأ أثناء حذف المشاركة: ' . $e->getMessage()], 500);

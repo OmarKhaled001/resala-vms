@@ -6,10 +6,18 @@ use App\Models\Section;
 use App\Models\Contribution;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ActivityLogsService;
 use App\Http\Requests\SuperAdmin\SectionRequest;
 
 class SectionController extends Controller
 {
+
+    protected $ActivityLogsService;
+    public function __construct(ActivityLogsService $ActivityLogsService)
+    {
+        $this->ActivityLogsService = $ActivityLogsService;
+    }
+    
     public function allSection() 
     {
         $sections = Section::all();
@@ -44,9 +52,17 @@ class SectionController extends Controller
             $section->email = $validatedData['email'] ;
             $section->password = bcrypt($validatedData['password']) ?? bcrypt($validatedData['username']) ;
             $section->save();
-    
             $section->contributions()->sync($validatedData['contribution_id']);
-    
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $section,
+                'causer' => $causer,
+                'log_name' => 'تم إضافة قسم جديد: ' . $section->name,
+                'description' => 'تم إنشاء القسم: ' . $section->name . ' (اسم المستخدم: ' . $section->username . ', البريد الإلكتروني: ' . $section->email . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'إضافة',
+                'guard' => 'super_admin',
+            ]);
+            
             return redirect()->route('super_admin.section.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
@@ -71,7 +87,16 @@ class SectionController extends Controller
             $section->save();
     
             $section->contributions()->sync($validatedData['contribution_id']);
-    
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $section,
+                'causer' => $causer,
+                'log_name' => 'تم تعديل قسم: ' . $section->name,
+                'description' => 'تم تعديل بيانات القسم: ' . $section->name . ' (اسم المستخدم: ' . $section->username . ', البريد الإلكتروني: ' . $section->email . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'تعديل',
+                'guard' => 'super_admin',
+            ]);
+            
             return redirect()->route('super_admin.section.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
@@ -82,7 +107,17 @@ class SectionController extends Controller
     {
         try {
             Section::findOrFail($id)->delete();
-    
+            $section = Section::findOrFail($id);
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $section,
+                'causer' => $causer,
+                'log_name' => 'تم حذف قسم: ' . $section->name,
+                'description' => 'تم حذف بيانات القسم: ' . $section->name . ' (اسم المستخدم: ' . $section->username . ', البريد الإلكتروني: ' . $section->email . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'حذف',
+                'guard' => 'super_admin',
+            ]);
+            
             return response()->json(['success' => 'تم حذف اللجنة بنجاح!']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'حدث خطأ أثناء حذف اللجنة: ' . $e->getMessage()], 500);

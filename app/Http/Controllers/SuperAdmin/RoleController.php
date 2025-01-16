@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\ActivityLogsService;
 
 class RoleController extends Controller
 {
+    
+    protected $ActivityLogsService;
+    public function __construct(ActivityLogsService $ActivityLogsService)
+    {
+        $this->ActivityLogsService = $ActivityLogsService;
+    }
+    
+    
     public function allRole() 
     {
         $roles = Role::where('guard_name','super_admin')->get();
@@ -55,7 +64,16 @@ class RoleController extends Controller
             $role->guard_name    = 'super_admin';
             $role->save() ;
             $role->syncPermissions($validatedData['permissions']);
-
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $role,
+                'causer' => $causer,
+                'log_name' => 'تم إضافة دور جديد: ' . $role->display_name,
+                'description' => 'تم إنشاء الدور: ' . $role->display_name . ' (الاسم: ' . $role->name . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'إضافة',
+                'guard' => 'super_admin',
+            ]);
+            
             return redirect()->route('super_admin.role.index')->with('success', 'تم إنشاء الدور بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
@@ -88,7 +106,16 @@ class RoleController extends Controller
             $role->guard_name    = 'super_admin';
             $role->save() ;
             $role->syncPermissions($validatedData['permissions']);
-    
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $role,
+                'causer' => $causer,
+                'log_name' => 'تم تعديل دور: ' . $role->display_name,
+                'description' => 'تم تعديل بيانات الدور: ' . $role->display_name . ' (الاسم: ' . $role->name . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'تعديل',
+                'guard' => 'super_admin',
+            ]);
+            
             return redirect()->route('super_admin.role.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
@@ -99,7 +126,17 @@ class RoleController extends Controller
     {
         try {
             Role::findOrFail($id)->delete();
-    
+            $role = Role::findOrFail($id);
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $role,
+                'causer' => $causer,
+                'log_name' => 'تم حذف دور: ' . $role->display_name,
+                'description' => 'تم حذف بيانات الدور: ' . $role->display_name . ' (الاسم: ' . $role->name . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'حذف',
+                'guard' => 'super_admin',
+            ]);
+            
             return response()->json(['success' => 'تم حذف اللجنة بنجاح!']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'حدث خطأ أثناء حذف اللجنة: ' . $e->getMessage()], 500);

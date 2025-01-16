@@ -8,6 +8,7 @@ use App\Http\Controllers\SuperAdmin\UserController;
 use App\Http\Controllers\SuperAdmin\BranchController;
 use App\Http\Controllers\SuperAdmin\SectionController;
 use App\Http\Controllers\SuperAdmin\ActivityController;
+use App\Http\Controllers\SuperAdmin\ActivityLogController;
 use App\Http\Controllers\SuperAdmin\ContributionController;
 
 Route::middleware('guest:super_admin')->group(function () {
@@ -46,6 +47,9 @@ Route::middleware( ['auth:super_admin'])->group(function(){
                 Route::post('/delete/{role}',      [RoleController::class, 'destroyRole'])         ->name('destroy');
             }
         );
+
+        Route::get('activity_logs/',              [ActivityLogController::class, 'index'])         ->name('activity_logs.index');
+
     });
 
     //------- Branch --------//

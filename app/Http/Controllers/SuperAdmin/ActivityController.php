@@ -11,11 +11,20 @@ use App\Imports\ActivityImport;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\ActivityLogsService;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\SuperAdmin\ActivityRequest;
 
 class ActivityController extends Controller
 {
+
+    protected $ActivityLogsService;
+    public function __construct(ActivityLogsService $ActivityLogsService)
+    {
+        $this->ActivityLogsService = $ActivityLogsService;
+    }
+    
+    
     public function allActivity()
     {
         $activities = Activity::all();
@@ -38,7 +47,15 @@ class ActivityController extends Controller
             $activity->email = $validatedData['email'];
             $activity->password = bcrypt($validatedData['password']);
             $activity->save();
-    
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $activity,
+                'causer' => $causer,
+                'log_name' => 'تم إضافة نشاط جديد: ' . $activity->name,
+                'description' => 'تم إنشاء النشاط: ' . $activity->name . ' (اسم المستخدم: ' . $activity->username . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'إضافة',
+                'guard' => 'super_admin',
+            ]);            
             $activity->sections()->sync($validatedData['section_id']);
     
             return redirect()->route('super_admin.activity.index')->with('success', 'تم الإنشاء بنجاح!');
@@ -167,7 +184,16 @@ class ActivityController extends Controller
             $fullPath = storage_path('app/' . $filePath);
 
             Excel::import(new ActivityImport, $fullPath);
-
+            $causer = auth('super_admin')->user(); // المستخدم الذي قام بالإجراء
+            $this->ActivityLogsService->insert([
+                'subject' => $causer,
+                'causer' => $causer,
+                'log_name' => 'تم استيراد الأنشطة',
+                'description' => 'تم استيراد الأنشطة من الملف: ' . $request->file('file')->getClientOriginalName() . ' بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'استيراد',
+                'guard' => 'super_admin',
+            ]);
+    
             return back()->with('success', 'تم استيراد الأنشطة بنجاح!');
         } catch (\Exception $e) {
             return back()->with('error', 'حدث خطأ أثناء استيراد الملف: ' . $e->getMessage());
@@ -178,6 +204,17 @@ class ActivityController extends Controller
     {
         try {
             Activity::findOrFail($id)->delete();
+            $activity = Activity::findOrFail($id);
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $activity,
+                'causer' => $causer,
+                'log_name' => 'تم حذف نشاط: ' . $activity->name,
+                'description' => 'تم حذف النشاط: ' . $activity->name . ' (اسم المستخدم: ' . $activity->username . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'حذف',
+                'guard' => 'super_admin',
+            ]);
+
             return redirect()->back()->with('success', 'تم حذف النشاط بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء حذف النشاط: ' . $e->getMessage());
@@ -197,7 +234,16 @@ class ActivityController extends Controller
         ]);
     
         try {
-            Activity::whereIn('id', $activityIds)->delete();
+            $activities = Activity::whereIn('id', $activityIds)->delete();
+            $causer = auth('super_admin')->user(); // المستخدم الذي قام بالحذف
+            $this->ActivityLogsService->insert([
+                'subject' => $causer,
+                'causer' => $causer,
+                'log_name' => 'تم حذف الأنشطة',
+                'description' => 'تم حذف الأنشطة : ' . implode(', ', $activities->name) . ' بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'حذف',
+                'guard' => 'super_admin',
+            ]);
             return redirect()->back()->with('success', 'تم حذف الأنشطة بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء حذف الأنشطة: ' . $e->getMessage());
@@ -227,6 +273,16 @@ class ActivityController extends Controller
             }
     
             $activity->save();
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $activity,
+                'causer' => $causer,
+                'log_name' => 'تم تعديل نشاط: ' . $activity->name,
+                'description' => 'تم تعديل بيانات النشاط: ' . $activity->name . ' (اسم المستخدم: ' . $activity->username . ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'تعديل',
+                'guard' => 'super_admin',
+            ]);
+
             $activity->sections()->sync($validatedData['section_id']);
     
             return redirect()->route('super_admin.activity.index')->with('success', 'تم التعديل بنجاح!');
