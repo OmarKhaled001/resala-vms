@@ -36,9 +36,9 @@ class LaratrustSeeder extends Seeder
             'email' => 'admin@vms.com',
         ], [
             'name' => 'Admin User',
-            'username' => 'admin',
+            'username' => 'admin@vms',
             'email' => 'admin@vms.com',
-            'password' => bcrypt('password'), // Set a secure password
+            'password' => bcrypt('admin@vms'), // Set a secure password
         ]);
 
         // Step 3: Assign the "owner" role to the "admin" user
