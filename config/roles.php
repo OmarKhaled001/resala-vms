@@ -18,6 +18,7 @@ return [
                 'create' => 'إنشاء',
                 'update' => 'تعديل',
                 'delete' => 'حذف',
+                'import' => 'إستيراد',
             ],
         ],
         'sections' => [
