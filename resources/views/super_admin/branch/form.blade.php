@@ -1,17 +1,17 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
     <div>
         <label for="name">الاسم</label>
-        <input name="name" type="text" placeholder="ادخل اسم اللجنة" class="form-input" value="{{ old('name', $branch->name ?? '') }}" autocomplete="off" />
+        <input name="name" type="text" placeholder="ادخل اسم اللجنة" class="form-input" value="{{ old('name', $branch->name ?? '') }}" autocomplete="off" required />
         @error('name') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
     <div>
         <label for="username">اسم المستخدم</label>
-        <input name="username" type="text" placeholder="ادخل اسم المستخدم" class="form-input" value="{{ old('username', $branch->username ?? '') }}" autocomplete="off" />
+        <input name="username" type="text" placeholder="ادخل اسم المستخدم" class="form-input" value="{{ old('username', $branch->username ?? '') }}" autocomplete="off" required/>
         @error('username') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
     <div>
         <label for="email">البريد الالكتروني</label>
-        <input name="email" type="email" placeholder="ادخل البريد الالكتروني" class="form-input" value="{{ old('email', $branch->email ?? '') }}" autocomplete="off" />
+        <input name="email" type="email" placeholder="ادخل البريد الالكتروني" class="form-input" value="{{ old('email', $branch->email ?? '') }}" autocomplete="off" required />
         @error('email') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
 </div>

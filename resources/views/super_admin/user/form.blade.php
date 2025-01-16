@@ -2,8 +2,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 dark:text-white-dark/70 text-base font-medium text-[#1f2937]">
         <div class="my-3">
             <label for="name">الاسم</label>
-            <input type="text" name="name" placeholder="ادخل اسم  المشاركة"
-                class="form-input"  value="{{ old('name', $user->name ?? '') }}"  />
+            <input type="text" name="name" placeholder="ادخل اسم"
+                class="form-input"  value="{{ old('name', $user->name ?? '') }}" required />
             @error('name')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
@@ -22,16 +22,16 @@
         </div>
         <div class="my-3">
             <label for="username">اسم المستخدم</label>
-            <input type="text" name="username" placeholder="ادخل اسم  المشاركة"
-                class="form-input"  value="{{ old('username', $user->username ?? '') }}"  />
+            <input type="text" name="username" placeholder="ادخل اسم  المستخدم"
+                class="form-input"  value="{{ old('username', $user->username ?? '') }}" required />
             @error('username')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
         <div class="my-3">
             <label for="email">البريد الالكتروني</label>
-            <input type="email" name="email" placeholder="ادخل اسم  المشاركة"
-                class="form-input"  value="{{ old('email', $user->email ?? '') }}"  />
+            <input type="email" name="email" placeholder="ادخل  البريد الالكتروني"
+                class="form-input"  value="{{ old('email', $user->email ?? '') }}" required />
             @error('email')
                 <span class="text-danger">{{ $message }}</span>
             @enderror

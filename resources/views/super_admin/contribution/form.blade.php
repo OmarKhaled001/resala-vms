@@ -3,7 +3,7 @@
         <div class="my-3">
             <label for="name">الاسم</label>
             <input type="text" name="name" placeholder="ادخل اسم  المشاركة"
-                class="form-input"  value="{{ old('name', $contribution->name ?? '') }}"  />
+                class="form-input"  value="{{ old('name', $contribution->name ?? '') }}" required  />
             @error('name')
                 <span class="text-danger">{{ $message }}</span>
             @enderror

@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
         <label for="display_name">الاسم</label>
-        <input name="display_name" type="text" placeholder=" 'ادخل اسم الدور مثل : 'محرر" class="form-input" value="{{ old('display_name', $role->display_name ?? '') }}" autocomplete="off" />
+        <input name="display_name" type="text" placeholder=" ادخل اسم الدور مثل : 'محرر' " class="form-input" value="{{ old('display_name', $role->display_name ?? '') }}" autocomplete="off" required/>
         @error('display_name') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
     <div>
