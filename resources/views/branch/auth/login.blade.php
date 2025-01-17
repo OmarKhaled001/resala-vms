@@ -191,7 +191,24 @@
         <script defer src="{{ asset('assets') }}/js/alpine.min.js"></script>
 
         <script src="{{ asset('assets') }}/js/custom.js"></script>
-
+  <script>
+            document.addEventListener('alpine:init', () => {
+            Alpine.store('app', {
+                theme: 'dark', // الوضع الافتراضي
+                isDarkMode: false, // الوضع المظلم مغلق افتراضياً
+                sidebar: false,
+                menu: '',
+                layout: '',
+                rtlClass: '',
+        
+                toggleDarkMode() {
+                    this.isDarkMode = !this.isDarkMode;
+                    this.theme = this.isDarkMode ? 'dark' : 'light';
+                }
+            });
+        });
+        
+        </script>
         
     </body>
 </html>

@@ -19,7 +19,12 @@
 
     <div class="flex flex-wrap items-center justify-start gap-2 mt-3 mb-5">
         <div x-data="modal">
-            <button class="btn btn-outline-primary" @click="toggle">إستيراد</button>
+            <button class="btn btn-outline-primary" @click="toggle">
+                <svg  class="ml-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 16V3M12 3L16 7.375M12 3L8 7.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                إستيراد</button>
             @include('super_admin.activity.import')
         </div>
         <div x-data="dropdown" @click.outside="open = false" class="dropdown" style="z-index:50;" id="action-button">
@@ -33,7 +38,7 @@
             <ul x-cloak x-show="open" x-transition x-transition.duration.300ms
                 class="ltr:right-0 rtl:left-0 whitespace-nowrap">
                 <li><a href="javascript:;" id="delete-button" class="text-danger" onclick="confirmDelete()">حذف</a></li>
-                <li x-data="modal"><a href="javascript:;" @click="toggle">استخراج تقرير</a>
+                <li x-data="modal"><a href="javascript:;" @click="toggle">استخراج </a>
                     @include('super_admin.activity.export')</li>
             </ul>
         </div>

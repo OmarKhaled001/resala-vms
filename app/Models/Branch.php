@@ -43,6 +43,11 @@ class Branch extends Authenticatable
         return $this->hasMany(Volunteer::class);
     }
 
+    function groups()
+    {
+        return $this->hasMany(Group::class);
+    }
+
     function events()
     {
         return $this->hasMany(Event::class);

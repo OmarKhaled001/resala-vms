@@ -19,6 +19,14 @@ return [
                 'update' => 'تعديل',
                 'delete' => 'حذف',
                 'import' => 'إستيراد',
+                'export' => 'تصدير',
+            ],
+        ],
+        'groups' => [
+            'title' => 'الفرق',
+            'permissions' => [
+                'read' => 'قراءة',
+                'export' => 'إستيراد',
             ],
         ],
         'sections' => [

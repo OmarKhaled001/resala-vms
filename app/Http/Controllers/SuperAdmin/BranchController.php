@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\ActivityLogsService;
 use App\Http\Requests\SuperAdmin\BranchRequest;
+use App\Models\Group;
 
 class BranchController extends Controller
 {
@@ -64,7 +65,18 @@ class BranchController extends Controller
             ]);
             
             $branch->activities()->sync($validatedData['activity_id']);
-    
+             $groups = collect($validatedData['activity_id'])->map(function ($activity_id) use ($branch) {
+            $activity = Activity::find($activity_id);
+            return [
+                    'name' => $branch->name . ' - ' . $activity->name,
+                    'branch_id' => $branch->id,
+                    'activity_id' => $activity_id,
+                    'is_active' => 1,
+                ];
+            });
+
+        Group::insert($groups->toArray());
+
             return redirect()->route('super_admin.branch.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
@@ -97,7 +109,17 @@ class BranchController extends Controller
             ]);
             
             $branch->activities()->sync($validatedData['activity_id']);
-    
+             $groups = collect($validatedData['activity_id'])->map(function ($activity_id) use ($branch) {
+            $activity = Activity::find($activity_id);
+            return [
+                    'name' => $branch->name . ' - ' . $activity->name,
+                    'branch_id' => $branch->id,
+                    'activity_id' => $activity_id,
+                    'is_active' => 1,
+                ];
+            });
+
+        Group::insert($groups->toArray());
             return redirect()->route('super_admin.branch.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());

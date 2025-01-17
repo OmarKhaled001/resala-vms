@@ -5,6 +5,7 @@ use App\Http\Controllers\SuperAdmin\AuthController;
 use App\Http\Controllers\SuperAdmin\PageController;
 use App\Http\Controllers\SuperAdmin\RoleController;
 use App\Http\Controllers\SuperAdmin\UserController;
+use App\Http\Controllers\SuperAdmin\GroupController;
 use App\Http\Controllers\SuperAdmin\BranchController;
 use App\Http\Controllers\SuperAdmin\SectionController;
 use App\Http\Controllers\SuperAdmin\ActivityController;
@@ -104,5 +105,15 @@ Route::middleware( ['auth:super_admin'])->group(function(){
             Route::post('/bulk-delete',        [ActivityController::class, 'deleteActivities'])   ->name('bulk.delete');
         }
     );
+    //------- Group --------//
+    Route::group(
+        ['prefix' => 'group', 'as' => 'group.'],
+        function () {
+            Route::get('/',                    [GroupController::class, 'allGroup'])        ->name('index');
+            Route::post('/export',             [GroupController::class, 'export'])             ->name('export');
+        }
+    );
+    Route::get('/weekly-statistics', [PageController::class, 'getWeeklyVolunteerStatistics'])->name('weekly.statistics');
+
 
 });
