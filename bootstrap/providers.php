@@ -3,5 +3,6 @@
 return [
     App\Providers\AppServiceProvider::class,
     Maatwebsite\Excel\ExcelServiceProvider::class,
+    Spatie\LivewireFilepond\LivewireFilepondServiceProvider::class,
 
 ];

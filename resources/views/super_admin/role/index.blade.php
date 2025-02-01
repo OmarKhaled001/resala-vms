@@ -26,7 +26,7 @@
                     <th class="wd-10p text-center border-bottom-0">#</th>
                     <th class="wd-25p text-center border-bottom-0">اسم الدور</th>
                     <th class="wd-25p text-center border-bottom-0">رمز</th>
-                    <th class="wd-25p text-center border-bottom-0">وصف</th>
+                    <th class="wd-25p text-center border-bottom-0">عدد الصلاحيات</th>
                     <th class="wd-25p text-center border-bottom-0">الاجرائات</th>
                 </tr>
             </thead>
@@ -36,7 +36,7 @@
                         <td style="text-align: center;">{{ $loop->iteration }}</td>
                         <td style="text-align: center;">{{ $role->display_name }}</td>
                         <td style="text-align: center;">{{ $role->name }}</td>
-                        <td style="text-align: center;">{{ $role->description }}</td>
+                        <td style="text-align: center;">{{ $role->permissions->count() }}</td>
                         <td class="text-center">
                             <ul class="flex items-center justify-center gap-2">
                                 <li x-data="modal">

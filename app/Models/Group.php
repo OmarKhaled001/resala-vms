@@ -60,6 +60,28 @@ class Group extends Model
         };
     }
 
+      public function getMangers()
+    {
+        return Volunteer::where('branch_id', $this->branch_id)
+        ->where('activity_id', $this->activity_id)
+        ->where('is_admin',1)
+        ->get() ?? null ;
+    }
+
+      public function getVolunteersWhitOutMangers()
+    {
+        return Volunteer::where('branch_id', $this->branch_id)
+        ->where('activity_id', $this->activity_id)
+        ->where('is_admin','!=',1)
+        ->get() ?? null ;
+    }
+
+      public function getVolunteers()
+    {
+        return Volunteer::where('branch_id', $this->branch_id)
+        ->where('activity_id', $this->activity_id)
+        ->get() ?? null ;
+    }
       public function getMasaolCount()
     {
         return Volunteer::where('branch_id', $this->branch_id)

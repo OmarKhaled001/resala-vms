@@ -14,6 +14,10 @@ class ContributionController extends Controller
     public function __construct(ActivityLogsService $ActivityLogsService)
     {
         $this->ActivityLogsService = $ActivityLogsService;
+        $this->middleware('permissionMiddleware:read-contribution,super_admin')->only('allContribution');
+        $this->middleware('permissionMiddleware:create-contribution,super_admin')->only('storeContribution');
+        $this->middleware('permissionMiddleware:update-contribution,super_admin')->only('updateContribution');
+        $this->middleware('permissionMiddleware:delete-contribution,super_admin')->only('destroyContribution');
     }
     
     public function allContribution()

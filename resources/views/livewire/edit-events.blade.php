@@ -1,5 +1,5 @@
 <div>
- 
+    <form wire:submit.prevent="createEvent" enctype="multipart/form-data">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-5">
         <div class="mb-2">
             <div x-data="form">
@@ -7,7 +7,7 @@
             </div>
         </div>
         <div class="mb-2">
-            <select wire:model.live="section_id" id="section_id" name="section_id"  value="{{ $section_id }}" class="form-input">
+            <select wire:model.live="section_id" id="section_id" name="section_id" class="form-input">
                 <option value="">اختر اللجنة</option>
                 @foreach ($sections as $section)
                     <option value="{{ $section->id }}">{{ $section->name }}</option>
@@ -15,8 +15,8 @@
             </select>
         </div>
     
-        <div class="mb-2"> 
-            <select wire:model="contribution_id" id="contribution_id" name="contribution_id"  value="{{ $contribution_id }}" class="form-input">
+        <div class="mb-2">
+            <select wire:model="contribution_id" id="contribution_id" name="contribution_id" class="form-input">
                 <option value="">اختر المشاركة</option>
                 @foreach ($contributions as $contribution)
                     <option value="{{ $contribution->id }}">{{ $contribution->name }}</option>
@@ -29,8 +29,83 @@
     <!-- حقل البحث عن المتطوعين -->
     <div x-data="modal" class="mb-5">
 
-        @include('volunteer.vol.short-create')
+        <!-- modal -->
+        <div class="fixed inset-0 bg-[black]/60 z-[999] hidden overflow-y-auto" :class="open && '!block'">
+            <div class="flex items-start justify-center min-h-screen px-4">
+                <div x-show="open" x-transition x-transition.duration.300 class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8">
+                    <div class="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                        <div class="font-bold text-lg">إضافة متطوع جديد</div>
+                        <button type="button" class="text-white-dark hover:text-dark" @click="toggle">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="m-auto h-5 w-5">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <div class="dark:text-white-dark/70 text-base font-medium text-[#1f2937]">
+                            <div class="my-3">
+                                <label for="name">الاسم</label>
+                                <input type="text" wire:model.defer="newVolunteer.name" placeholder="ادخل اسم المتطوع ثلاثي" class="form-input" />
+                                @error('newVolunteer.name') <span class="text-danger">{{ $message }}</span> @enderror
 
+                            </div>
+                            <div class="my-3">
+                                <label for="phone">رقم الهاتف</label>
+                                <input type="text" wire:model.defer="newVolunteer.phone" placeholder="ادخل رقم الهاتف" class="form-input" />
+                                @error('newVolunteer.phone') <span class="text-danger">{{ $message }}</span> @enderror
+
+                            </div>
+                            <div class=" my-3 ">
+                                <label for="phone">النوع</label>
+
+                                <div class="d-flex  my-3">
+                                    <label class="inline-flex ml-3">
+                                        <input type="radio" name="default_text_color" class="form-radio text-info peer" value="1" wire:model.defer="newVolunteer.gender"/>
+                                        <span class="peer-checked:text-info">ذكر</span>
+                                    </label>
+                                    <label class="inline-flex">
+                                        <input type="radio" name="default_text_color" class="form-radio text-danger peer" value="2" wire:model.defer="newVolunteer.gender"/>
+                                        <span class="peer-checked:text-danger">انثي</span>
+                                    </label>
+                                </div>
+                                @error('newVolunteer.gender') <span class="text-danger">{{ $message }}</span> @enderror
+
+                            </div>
+                            <div class="my-3">
+                                <label for="volunteer_date">تاريخ التطوع</label>
+                                <input id="date-input-modal"  wire:model.defer="newVolunteer.vol_date" class="form-input" placeholder="ادخل  تاريخ التطوع"/>
+                                @error('newVolunteer.vol_date') <span class="text-danger">{{ $message }}</span> @enderror
+
+                            </div>
+                            
+                            <div class="my-3">
+                                <label for="birth_date">تاريخ الميلاد</label>
+                                <input id="date-input-modal"  wire:model.defer="newVolunteer.birth_date" class="form-input" placeholder="ادخل  تاريخ الميلاد" />
+                                @error('newVolunteer.birth_date') <span class="text-danger">{{ $message }}</span> @enderror
+
+                            </div>
+                        </div>
+                        <div class="flex justify-end items-center mt-8">
+                            <button type="button" class="btn btn-outline-danger" @click="toggle">غلق</button>
+                            <button type="button" class="btn btn-primary ltr:ml-4 rtl:mr-4" wire:click="addNewVolunteer" >إضافة</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("alpine:init", () => {
+                Alpine.data("modal", (initialOpenState = false) => ({
+                    open: initialOpenState,
+        
+                    toggle() {
+                        this.open = !this.open;
+                    },
+                }));
+            });
+        </script>
         <div class="relative">
             <input type="text"  wire:model.live="searchTerm" placeholder=" ....ابحث عن المتطوع" class="form-input shadow-[0_0_4px_2px_rgb(31_45_61_/_10%)] bg-white rounded-full h-11 placeholder:tracking-wider" x-model="search" />
             <button @click="toggle" type="button" class="btn btn-primary  absolute ltr:right-1 rtl:left-1 inset-y-0 m-auto rounded-full w-9 h-9 p-0 flex items-center justify-center">
@@ -82,31 +157,40 @@
             </thead>
             <tbody>
                 @foreach ($selectedVolunteers as $id => $volunteer)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $volunteer['name'] }}</td>
-                        <td><input type="checkbox" class="form-checkbox text-success peer" value="1" wire:model="selectedVolunteersShirts.{{ $id }}.tshirt"/></td>
-                        <td>
-                            <a href="javascript:;" wire:click="removeVolunteer({{ $id }})">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
-                                    <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                    <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                    <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                    <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                    <path opacity="0.5" d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6" stroke="currentColor" stroke-width="1.5"></path>
-                                </svg>
-                            </a>
-                        </td>
-                    </tr>
-                @endforeach
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $volunteer['name'] }}</td>
+                    <td>
+                        <input 
+                        type="checkbox" 
+                        class="form-checkbox text-success peer" 
+                        value="1" 
+                        wire:model="selectedVolunteersShirts.{{ $id }}.tshirt"
+                    />                  
+                  </td>
+                    <td>
+                        <a href="javascript:;" wire:click="removeVolunteer({{ $id }})">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
+                                <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                <path opacity="0.5" d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6" stroke="currentColor" stroke-width="1.5"></path>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
             </tbody>
         </table>
     </div>
     @endif
+    <div class="my-5">
+        <label for="ctnTextarea">صورة الحدث</label>
 
-
-
-    <div class="my-2">
+        <x-filepond::upload wire:model="files" multiple class="dark:bg-[#060818]"/>
+           </div>
+    <div class="my-3">
         <label for="ctnTextarea">ملاحظات</label>
         <textarea id="ctnTextarea" rows="3" class="form-textarea"
             placeholder="اكتب ملاحظات الحدث والتفاصل الاضافية ان وجد " wire:model="notes"></textarea>
@@ -116,11 +200,20 @@
 
     <div class="flex space-x-2 !mt-6">
 
-        <button  wire:click="createEvent('volunteer.event.index')" class="btn btn-primary ml-3">إضافة </button>
-        <button  wire:click="createEvent('volunteer.event.create.media')" class="btn btn-primary ">إضافة وسائط </button>
+        <button  type="submit" class="btn btn-primary ml-3">تعديل</button>
     </div>
+    </form>
     @section('script')
- 
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+    <script>
+        document.addEventListener('livewire:load', function () {
+            FilePond.create(document.querySelector('.filepond'), {
+                allowMultiple: true,
+                labelIdle: `{{ $event->getFirstMediaUrl('images') ? '<img alt="event" class="rounded-circle object-fit-cover text-center" src="' . $event->getFirstMediaUrl('images') . '">' : 'Drop files here' }}`,
+            });
+        });
+    </script>
+    
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <link rel="stylesheet" href="{{ asset('assets') }}/css/highlight.min.css" />
         <script src="{{ asset('assets') }}/js/highlight.min.js"></script>
@@ -129,6 +222,7 @@
         <script src="{{ asset('assets') }}/js/nice-select2.js"></script>
         <script src="{{ asset('assets') }}/js/nouislider.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js"></script>
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -190,7 +284,9 @@
                 });
             });
         </script>
+      
        
     @endsection
+
 
 </div>

@@ -16,6 +16,12 @@ class SectionController extends Controller
     public function __construct(ActivityLogsService $ActivityLogsService)
     {
         $this->ActivityLogsService = $ActivityLogsService;
+        $this->middleware('permissionMiddleware:read-section,super_admin')->only('allSection');
+        $this->middleware('permissionMiddleware:create-section,super_admin')->only('createForm');
+        $this->middleware('permissionMiddleware:create-section,super_admin')->only('storeSection');
+        $this->middleware('permissionMiddleware:update-section,super_admin')->only('editForm');
+        $this->middleware('permissionMiddleware:update-section,super_admin')->only('updateSection');
+        $this->middleware('permissionMiddleware:delete-section,super_admin')->only('destroySection');
     }
     
     public function allSection() 
@@ -124,18 +130,5 @@ class SectionController extends Controller
         }
     }
     
-
-    public function getContributions(Request $request)
-    {
-        $sectionId = $request->get('section_id');
-        $section = Section::with('contributions')->find($sectionId);
-    
-        if ($section) {
-            $contributions = $section->contributions;
-            return response()->json($contributions);
-        }
-    
-        return response()->json([], 404);
-    }
     
 }

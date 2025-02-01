@@ -1,10 +1,22 @@
 <div>
     <div class="flex">
+        @if (auth('branch')->check()) 
+         <div class="ltr:mr-4 rtl:ml-4">
+            <img src="{{ Avatar::create(auth('branch')->user()->username)->toBase64() }}" alt="image" class="w-14 h-14 rounded" />
+        </div>
+        @elseif (auth('volunteer')->check()) 
         <div class="ltr:mr-4 rtl:ml-4">
             <img src="{{ Avatar::create(auth('volunteer')->user()->branch->email)->toBase64() }}" alt="image" class="w-14 h-14 rounded" />
         </div>
+        @endif
+        
         <div class="flex-1">
-            <h4 class="font-semibold text-lg mb-2 text-primary">{{ auth('volunteer')->user()->email }}</h4>
+            @if (auth('branch')->check()) 
+            <h4 class="font-semibold text-lg mb-2 text-primary">{{ auth('branch')->user()->username }}</h4>
+           @elseif (auth('volunteer')->check()) 
+           <h4 class="font-semibold text-lg mb-2 text-primary">{{ auth('volunteer')->user()->branch->username }}</h4>
+
+           @endif
             <p class="media-text mb-5">{{ $event->reason }}</p>
 
             <div id="commentsList">
@@ -12,10 +24,10 @@
                     @foreach ($comments as $comment)
                         <div class="flex mb-5 max-h-40" wire:poll.10s >
                             <div class="ltr:mr-4 rtl:ml-4">
-                                <img src="{{ Avatar::create($comment->authorable->email)->toBase64() }}" alt="image" class="w-14 h-14 rounded" />
+                                <img src="{{ Avatar::create($comment->authorable->username)->toBase64() }}" alt="image" class="w-14 h-14 rounded" />
                             </div>
                             <div class="flex-1">
-                                <h4 class="font-semibold text-lg mb-2 text-primary">{{ $comment->authorable->name ?? 'Unknown Author'}}</h4>
+                                <h4 class="font-semibold text-lg mb-2 text-primary">{{ $comment->authorable->username ?? 'Unknown Author'}}</h4>
                                 <p class="media-text">{{ $comment->body }}</p>
                                
                                 <div class="whitespace-nowrap text-white-dark mt-2">{{ $comment->created_at->diffForHumans() }}</div>

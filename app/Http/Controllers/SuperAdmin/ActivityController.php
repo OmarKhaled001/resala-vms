@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use App\Exports\FormatExport;
 use Illuminate\Support\Carbon;
 use App\Imports\ActivityImport;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\ActivityLogsService;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +22,15 @@ class ActivityController extends Controller
     public function __construct(ActivityLogsService $ActivityLogsService)
     {
         $this->ActivityLogsService = $ActivityLogsService;
+        $this->middleware('permissionMiddleware:read-activity,super_admin')->only('allActivity');
+        $this->middleware('permissionMiddleware:create-activity,super_admin')->only('createForm');
+        $this->middleware('permissionMiddleware:create-activity,super_admin')->only('storeActivity');
+        $this->middleware('permissionMiddleware:export-activity,super_admin')->only('export');
+        $this->middleware('permissionMiddleware:import-activity,super_admin')->only('import');
+        $this->middleware('permissionMiddleware:update-activity,super_admin')->only('editForm');
+        $this->middleware('permissionMiddleware:update-activity,super_admin')->only('updateActivity');
+        $this->middleware('permissionMiddleware:delete-activity,super_admin')->only('deleteActivity');
+        $this->middleware('permissionMiddleware:delete-activity,super_admin')->only('deleteActivities');
     }
     
     

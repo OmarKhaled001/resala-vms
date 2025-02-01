@@ -17,6 +17,12 @@ class UserController extends Controller
     public function __construct(ActivityLogsService $ActivityLogsService)
     {
         $this->ActivityLogsService = $ActivityLogsService;
+        $this->middleware('permissionMiddleware:read-user,super_admin')->only('allUser');
+        $this->middleware('permissionMiddleware:create-user,super_admin')->only('storeUser');
+        $this->middleware('permissionMiddleware:update-user,super_admin')->only('updateUser');
+        $this->middleware('permissionMiddleware:delete-user,super_admin')->only('destroyUser');
+
+        
     }
     public function allUser()
     {

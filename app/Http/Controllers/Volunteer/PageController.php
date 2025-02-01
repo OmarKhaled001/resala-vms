@@ -5,7 +5,7 @@ namespace App\Http\Controllers\volunteer;
 use App\Models\Event;
 use App\Models\Volunteer;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 
 class PageController extends Controller
 {

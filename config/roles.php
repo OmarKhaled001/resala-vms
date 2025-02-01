@@ -2,7 +2,7 @@
 
 return [
     'super_admin' => [
-        'branches' => [
+        'branch' => [
             'title' => 'الفروع',
             'permissions' => [
                 'read' => 'قراءة',
@@ -11,7 +11,7 @@ return [
                 'delete' => 'حذف',
             ],
         ],
-        'activities' => [
+        'activity' => [
             'title' => 'الأنشطة',
             'permissions' => [
                 'read' => 'قراءة',
@@ -22,14 +22,14 @@ return [
                 'export' => 'تصدير',
             ],
         ],
-        'groups' => [
+        'group' => [
             'title' => 'الفرق',
             'permissions' => [
                 'read' => 'قراءة',
                 'export' => 'إستيراد',
             ],
         ],
-        'sections' => [
+        'section' => [
             'title' => 'اللجان',
             'permissions' => [
                 'read' => 'قراءة',
@@ -38,7 +38,7 @@ return [
                 'delete' => 'حذف',
             ],
         ],
-        'contributions' => [
+        'contribution' => [
             'title' => 'المشاركات',
             'permissions' => [
                 'read' => 'قراءة',
@@ -47,7 +47,7 @@ return [
                 'delete' => 'حذف',
             ],
         ],
-        'users' => [
+        'user' => [
             'title' => 'المستخدمون',
             'permissions' => [
                 'read' => 'قراءة',
@@ -56,7 +56,7 @@ return [
                 'delete' => 'حذف',
             ],
         ],
-        'roles' => [
+        'role' => [
             'title' => 'الأدوار',
             'permissions' => [
                 'read' => 'قراءة',
@@ -65,7 +65,7 @@ return [
                 'delete' => 'حذف',
             ],
         ],
-        'activity_logs' => [
+        'activity_log' => [
             'title' => 'سجل العمليات',
             'permissions' => [
                 'read' => 'قراءة',

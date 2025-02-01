@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permissionMiddleware:read-activity_log,super_admin')->only('index');
+    }
     public function index()
     {
         $activities = Activity_log::where('guard','super_admin')->get();

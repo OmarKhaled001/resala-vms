@@ -9,6 +9,9 @@
     <script defer src="{{ asset('assets') }}/js/popper.min.js"></script>
     <script defer src="{{ asset('assets') }}/js/tippy-bundle.umd.min.js"></script>
     <script defer src="{{ asset('assets') }}/js/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="assets/css/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.27/fancybox.min.css">
 
 @endsection
 
@@ -98,7 +101,7 @@
 
                         <td class="text-center">
                             <ul class="flex items-center justify-center gap-2">
-                                {{-- <li x-data="modal">
+                                <li >
                                     <a href="{{ route('volunteer.event.edit',$event->id) }}" x-tooltip="تعديل" class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
                                             <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
@@ -106,9 +109,7 @@
                                             <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
                                         </svg>
                                     </a>
-                                    @include('branch.event.change-status')
-
-                                </li> --}}
+                                </li>
                                 <li x-data="modal">
                                     <a @click="toggle" x-tooltip="عرض" class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -123,7 +124,6 @@
                                     </a>
                                     @include('volunteer.event.show')
                                 </li>
-
                                 <li>
                                     <a href="javascript:;" x-tooltip="حذف" @click="showDeleteAlert({{ $event->id }})">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -156,6 +156,8 @@
 
 @endsection
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.27/fancybox.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
@@ -182,15 +184,26 @@
         });
     </script>
     <script>
-        const swiper1 = new Swiper(".slider1", {
-            navigation: {
-                nextEl: '.swiper-button-next-ex1',
-                prevEl: '.swiper-button-prev-ex1',
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('sliderComponent', () => ({
+                swiper: null,
+
+                initSwiper() {
+                    // Initialize Swiper
+                    this.swiper = new Swiper('.slider1', {
+                        loop: true, // Enable loop
+                        navigation: {
+                            nextEl: '.swiper-button-next-ex1',
+                            prevEl: '.swiper-button-prev-ex1',
+                        },
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+
+                    });
+                },
+            }));
         });
     </script>
     <script>
@@ -208,7 +221,17 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const myTable = document.querySelector(".myTable");
-
+            const swiper1 = new Swiper(".slider1", {
+                navigation: {
+                    nextEl: '.swiper-button-next-ex1',
+                    prevEl: '.swiper-button-prev-ex1',
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                loop: true,
+            });
             new simpleDatatables.DataTable(myTable, {
                 searchable: true, // Enable search functionality
                 fixedHeight: false, // Add scrollable height
@@ -427,6 +450,15 @@
             });
         }
     </script>
+    <script>
+        Fancybox.bind('[data-fancybox="gallery"]', {
+            infinite: true,
+            zoom: true,
+            animationEffect: 'zoom-in-out',
+        });
+
+    </script>
+    <!-- script -->
 
 
 

@@ -1,7 +1,7 @@
 
 <script src="{{ asset('assets') }}/js/custom.js"></script>
 <script defer src="{{ asset('assets') }}/js/apexcharts.js"></script>
-
+@filepondScripts
 <script>
     document.addEventListener('alpine:init', () => {
         // main section

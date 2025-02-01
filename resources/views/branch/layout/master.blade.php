@@ -3,7 +3,8 @@
 @include('branch.layout.meta')
 
 @yield('style')
-
+    
+@livewireStyles
     <body
     x-data="main"
     class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased"
@@ -22,6 +23,8 @@
     </div>
     @include('branch.layout.script')
     @yield('script')
+    @livewireScripts
+
 </body>
 
 </html>

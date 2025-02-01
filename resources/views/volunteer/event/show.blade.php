@@ -25,6 +25,8 @@
                                     :class="{ 'before:w-full text-primary': tab === 'home' }" @click="tab='home'">
                                     المتطوعين</a>
                             </li>
+                            @if ($event->getMedia('images') != null)
+
                             <li>
                                 <a href="javascript:"
                                     class="p-5 py-3 -mb-[1px] flex items-center relative before:transition-all before:duration-700 hover:text-primary before:absolute before:w-0 before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-[1px] before:bg-primary hover:before:w-full"
@@ -32,6 +34,7 @@
                                     @click="tab='profile'">
                                     الوسائط</a>
                             </li>
+                            @endif
                             @if ($event->reason)
                                 <li>
                                     <a href="javascript:"
@@ -88,32 +91,37 @@
                             </table>
                         </div>
                     </div>
+                    @if ($event->getMedia('images') != null)
                     <div x-show="tab === 'profile'">
-                        <div class="p-5">
-                            <div class="swiper max-w-3xl mx-auto mb-5 slider1" id="slider1">
+                        <div x-data="sliderComponent()" x-init="initSwiper" class="p-5">
+                            <div class="swiper max-w-3xl mx-auto mb-5 slider1">
                                 <div class="swiper-wrapper">
-                                    <template x-for="item in items">
-                                        <div class="swiper-slide">
-                                            <img :src="`/{{ asset('assets') }}/images/${item}`"
-                                                class="w-full max-h-80 object-cover" alt="image" />
-                                        </div>
-                                    </template>
+                                    @foreach($event->getMedia('images') as $media)
+                                    <div class="swiper-slide">
+                                        <a href="{{ $media->getUrl() }}" data-fancybox="gallery" data-caption="{{ $media->name }}" target="_blank">
+                                            <img src="{{ $media->getUrl() }}" class="w-full max-h-80 object-cover" alt="image" />
+                                        </a>
+                                    </div>
+                                    @endforeach
                                 </div>
-                                <a href="javascript:;"
-                                    class="swiper-button-prev-ex1 grid place-content-center ltr:left-2 rtl:right-2 p-1 transition text-primary hover:text-white border border-primary  hover:border-primary hover:bg-primary rounded-full absolute z-[999] top-1/2 -translate-y-1/2">
-                                    <svg> ... </svg>
+                                <!-- Navigation Buttons -->
+                                <a href="javascript:;" class="swiper-button-prev-ex1 grid place-content-center ltr:left-2 rtl:right-2 p-1 transition text-primary hover:text-white border border-primary  hover:border-primary hover:bg-primary rounded-full absolute z-[999] top-1/2 -translate-y-1/2">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rtl:rotate-180">
+                                        <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
                                 </a>
-                                <a href="javascript:;"
-                                    class="swiper-button-next-ex1 grid place-content-center ltr:right-2 rtl:left-2 p-1 transition text-primary hover:text-white border border-primary  hover:border-primary hover:bg-primary rounded-full absolute z-[999] top-1/2 -translate-y-1/2">
-                                    <svg> ... </svg>
+                                <a href="javascript:;" class="swiper-button-next-ex1 grid place-content-center ltr:right-2 rtl:left-2 p-1 transition text-primary hover:text-white border border-primary  hover:border-primary hover:bg-primary rounded-full absolute z-[999] top-1/2 -translate-y-1/2">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:rotate-180">
+                                        <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
                                 </a>
                                 <div class="swiper-pagination"></div>
                             </div>
-
-                            <!-- script -->
-
                         </div>
+                        
                     </div>
+                    @endif
+                    
                     @if ($event->reason)
 
                         <div x-show="tab === 'contact'">
@@ -134,3 +142,6 @@
         </div>
     </div>
 </div>
+
+ 
+    

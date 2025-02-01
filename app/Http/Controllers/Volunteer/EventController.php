@@ -127,63 +127,7 @@ class EventController extends Controller
 
     }
 
-    public function createMedia($id) {
-        $event = Event::find($id);
-        $user = auth('volunteer')->user();
-        $volunteers = Volunteer::where('branch_id',$user->branch_id)->where('activity_id',$user->activity_id)->get();
-        $sections = $user->activity->sections;
-        return view('volunteer.event.create-media',compact('volunteers','sections','event'));
-    }
-
-    public function storeMedia(Request $request) {
-
-        // return response( $request);
-
-        $messages = [
-            'id.required' => 'حقل الحدث مطلوب.',
-            'id.exists' => 'الحدث الذي تم تحديده غير موجود.',
-            'images.required' => 'يجب رفع صور للحدث.',
-            'images.*.file' => 'كل صورة يجب أن تكون ملفًا.',
-            'images.*.image' => 'كل صورة يجب أن تكون صورة.',
-            'images.*.max' => 'يجب أن لا يتجاوز حجم الصورة 5 ميجابايت.',
-        ];
-        $request->validate([
-            'id' => 'required|exists:events,id',
-            'images' => 'required|array',
-            'images.*' => 'file|image|max:5120', // Max size 5 MB per file
-        ], $messages);
-        $event = Event::find($request->id);
-    
-        if ($request->images && count($request->images) > 0) {
-            foreach ($request->images as $image) {
-                $event->addMedia($image)->toMediaCollection('events');
-            }
-            return redirect()->route('volunteer.event.index')->with('success', 'تم إضافة الحدث بنجاح!');
-        } else {
-            return back()->withErrors(['images' => 'فشل في رفع الصور!'])->withInput();
-        }
-    }
-
-    public function storeComment(Request $request, Event $event)
-    {
- 
-        $request->validate([
-            'body' => 'required|string',
-            'commentable_id' => 'required|integer',
-            'commentable_type' => 'required|string',
-        ]);
-
-        $comment = Comment::create([
-            'body' => $request->body,
-            'commentable_id' => $request->commentable_id,
-            'commentable_type' => $request->commentable_type,
-            'authorable_id' => auth('volunteer')->user()->id,
-            'authorable_type' => auth('volunteer')->user()::class,
-        ]);
-
-        return response()->json(['success' => true, 'comment' => $comment]);
-    }
-    
+   
     public function destroy(Request $request, $id)
     {
         $request->validate([
@@ -194,6 +138,7 @@ class EventController extends Controller
             $event = Event::findOrFail($id);
     
             if ($event->status != 'conforming') {
+                $event->clearMediaCollection('images'); 
                 $event->delete();
                 return response()->json(['success' => 'تم حذف الحدث بنجاح.']);
             } else {

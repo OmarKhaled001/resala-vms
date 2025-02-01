@@ -1,5 +1,5 @@
 @extends('branch.layout.master')
-@section('title', 'الاحداث - إدارة المتطوعين')
+@section('title', 'إدارة المتطوعين')
 
 @section('style')
 <link rel="stylesheet" href="{{ asset('assets') }}/css/highlight.min.css" />
@@ -16,7 +16,7 @@
             <span>الكل</span>
         </li>
     </ul>
- <div class="flex flex-wrap mt-3 mb-5 ">
+ {{-- <div class="flex flex-wrap mt-3 mb-5 ">
      <button href="#" class="btn btn-outline-secondary">سجل الفرع</button >
      <button type="button" class="btn btn-success mr-3">
          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
@@ -24,7 +24,7 @@
              <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
          </svg>
      </button>
- </div>
+ </div> --}}
     <div class="panel mt-5 dark:text-white-light">
         <table id="myTable" class="table-responsive myTable dark:text-white-light">
             <thead>
@@ -72,8 +72,8 @@
                                     @include('branch.event.change-status')
 
                                 </li>
-                                <li  x-data="modal">
-                                    <a @click="toggle" x-tooltip="عرض">
+                                <li x-data="modal">
+                                    <a @click="toggle" x-tooltip="عرض" class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
                                             <path opacity="0.5"
@@ -119,18 +119,7 @@
 @section('script')
 <script src="{{ asset('assets') }}/js/swiper-bundle.min.js"></script>
 
-    <script>
-        const swiper1 = new Swiper(".slider1", {
-            navigation: {
-                nextEl: '.swiper-button-next-ex1',
-                prevEl: '.swiper-button-prev-ex1',
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-        });
-        </script>
+
 
     <script src="{{ asset('assets') }}/js/simple-datatables.js"></script>
     <script>

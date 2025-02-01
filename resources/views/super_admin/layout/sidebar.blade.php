@@ -39,8 +39,7 @@
                     </div>
                 </a>
             </li>
-        
-        
+            @if (auth('super_admin')->user()->hasPermission('read-branch') || auth('super_admin')->user()->hasPermission('create-branch') || auth('super_admin')->user()->hasPermission('read-activity') || auth('super_admin')->user()->hasPermission('create-activity') || auth('super_admin')->user()->hasPermission('read-section') || auth('super_admin')->user()->hasPermission('create-section') || auth('super_admin')->user()->hasPermission('read-contribution') || auth('super_admin')->user()->hasPermission('read-group'))
             <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                 <svg class="hidden h-5 w-4 flex-none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"
                     fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -48,6 +47,8 @@
                 </svg>
                 <span>الهيكل</span>
             </h2>
+            @endif
+            @if (auth('super_admin')->user()->hasPermission('read-branch') || auth('super_admin')->user()->hasPermission('create-branch'))
             <li class="nav-item">
                 <ul x-data="{ activeDropdown: '{{ request()->routeIs('super_admin.branch.*') ? 'branches' : '' }}' }">
                     <li class="nav-item">
@@ -70,21 +71,27 @@
                                     </div>
                                 </button>
                                 <ul x-show="activeDropdown === 'branches'" x-collapse="" class="sub-menu text-gray-500" style="display: block;">
+                                    @if (auth('super_admin')->user()->hasPermission('read-branch')  )
                                     <li>
                                         <a href="{{ route('super_admin.branch.index') }}" 
                                            class="{{ request()->routeIs('super_admin.branch.index') ? 'active' : '' }}">الكل</a>
                                     </li>
+                                   @endif
+                                    @if (auth('super_admin')->user()->hasPermission('create-branch') )
                                     <li>
                                         <a href="{{ route('super_admin.branch.create') }}" 
                                         class="{{ request()->routeIs('super_admin.branch.create') ? 'active' : '' }}">إضافة</a>
                                     </li>
+                                    @endif
+
                                 </ul>
                             </li>
                         </ul>
                     </li>
                 </ul>
-                
             </li>
+            @endif
+            @if (auth('super_admin')->user()->hasPermission('read-activity') || auth('super_admin')->user()->hasPermission('create-activity'))
             <li class="nav-item">
                 <ul x-data="{ activeDropdown: '{{ request()->routeIs('super_admin.activity.*') ? 'activity' : '' }}' }">
                     <li class="nav-item">
@@ -109,14 +116,18 @@
                                     </div>
                                 </button>
                                 <ul x-show="activeDropdown === 'activity'" x-collapse="" class="sub-menu text-gray-500" style="display: block;">
-                                    <li>
-                                        <a href="{{ route('super_admin.activity.index') }}" 
-                                           class="{{ request()->routeIs('super_admin.activity.index') ? 'active' : '' }}">الكل</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('super_admin.activity.create') }}" 
-                                           class="{{ request()->routeIs('super_admin.activity.create') ? 'active' : '' }}">إضافة</a>
-                                    </li>
+                                    @if (auth('super_admin')->user()->hasPermission('read-activity'))
+                                        <li>
+                                            <a href="{{ route('super_admin.activity.index') }}" 
+                                            class="{{ request()->routeIs('super_admin.activity.index') ? 'active' : '' }}">الكل</a>
+                                        </li>
+                                    @endif
+                                    @if (auth('super_admin')->user()->hasPermission('create-activity'))
+                                        <li>
+                                            <a href="{{ route('super_admin.activity.create') }}" 
+                                            class="{{ request()->routeIs('super_admin.activity.create') ? 'active' : '' }}">إضافة</a>
+                                        </li>
+                                    @endif
                                   
                                 </ul>
                             </li>
@@ -125,6 +136,8 @@
                 </ul>
                 
             </li>
+            @endif
+            @if (auth('super_admin')->user()->hasPermission('read-group'))
             <li class="nav-item">
                 <a href="{{ route('super_admin.group.index') }}" class="{{ request()->routeIs('super_admin.group.index') ? 'active' : '' }} group">
                     <div class="flex items-center">
@@ -141,6 +154,8 @@
                     </div>
                 </a>
             </li>
+            @endif
+            @if (auth('super_admin')->user()->hasPermission('read-section') || auth('super_admin')->user()->hasPermission('create-section') || auth('super_admin')->user()->hasPermission('read-contribution'))
             <li class="nav-item">
                 <ul x-data="{ activeDropdown: '{{ (request()->routeIs('super_admin.section.*') or request()->routeIs('super_admin.contribution.*') ) ? 'section' : '' }}' }">
                     <li class="nav-item">
@@ -163,21 +178,24 @@
                                     </div>
                                 </button>
                                 <ul x-show="activeDropdown === 'section'" x-collapse="" class="sub-menu text-gray-500" style="display: block;">
-                               
-                                    <li>
-                                        <a href="{{ route('super_admin.section.index') }}" 
-                                        class="{{ request()->routeIs('super_admin.section.index') ? 'active' : '' }}">الكل</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('super_admin.section.create') }}" 
-                                        class="{{ request()->routeIs('super_admin.section.create') ? 'active' : '' }}">إضافة</a>
-                                    </li>
-                               
-                                    <li>
-                                        <a href="{{ route('super_admin.contribution.index') }}" 
-                                        class="{{ request()->routeIs('super_admin.contribution.index') ? 'active' : '' }}">المشاركات</a>
-                                    </li>
-                                 
+                                    @if (auth('super_admin')->user()->hasPermission('read-section'))
+                                        <li>
+                                            <a href="{{ route('super_admin.section.index') }}" 
+                                            class="{{ request()->routeIs('super_admin.section.index') ? 'active' : '' }}">الكل</a>
+                                        </li>
+                                    @endif
+                                    @if (auth('super_admin')->user()->hasPermission('create-section'))
+                                        <li>
+                                            <a href="{{ route('super_admin.section.create') }}" 
+                                            class="{{ request()->routeIs('super_admin.section.create') ? 'active' : '' }}">إضافة</a>
+                                        </li>
+                                    @endif
+                                    @if (auth('super_admin')->user()->hasPermission('read-contribution'))
+                                        <li>
+                                            <a href="{{ route('super_admin.contribution.index') }}" 
+                                            class="{{ request()->routeIs('super_admin.contribution.index') ? 'active' : '' }}">المشاركات</a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </li>
                         </ul>
@@ -185,71 +203,73 @@
                 </ul>
                 
             </li>
-            @role('owner')
-            <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                <svg class="hidden h-5 w-4 flex-none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"
-                    fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                <span>الإعدادت</span>
-            </h2>
+            @endif
+            @if (auth('super_admin')->user()->hasPermission('read-user') || auth('super_admin')->user()->hasPermission('read-role') || auth('super_admin')->user()->hasPermission('read-activity_log'))
+                <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+                    <svg class="hidden h-5 w-4 flex-none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"
+                        fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>الإعدادت</span>
+                </h2>
+            @endif
             <li class="nav-item">
                 <ul x-data="{ activeDropdown: '{{ request()->routeIs('super_admin.user.*') ? 'users' : '' }}' }">
                     <li class="nav-item">
                         <ul>
-                            
-                            <li class="nav-item">
-                                <a href="{{ route('super_admin.user.index') }}" class="{{ request()->routeIs('super_admin.user.*') ? 'active' : '' }} group">
-                                    <div class="flex items-center">
-                                        <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle opacity="0.5" cx="15" cy="6" r="3" fill="currentColor"></circle>
-                                            <ellipse opacity="0.5" cx="16" cy="17" rx="5" ry="3" fill="currentColor"></ellipse>
-                                            <circle cx="9.00098" cy="6" r="4" fill="currentColor"></circle>
-                                            <ellipse cx="9.00098" cy="17.001" rx="7" ry="4" fill="currentColor"></ellipse>
-                                        </svg>
-                                        <span
-                                            class="text-black rtl:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">المستخدمون</span>
-                                    </div>
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a href="{{ route('super_admin.role.index') }}" class="{{ request()->routeIs('super_admin.role.*') ? 'active' : '' }} group">
-                                    <div class="flex items-center">
-                                        <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path opacity="0.5" d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z" fill="currentColor"></path>
-                                            <path d="M8 17C8.55228 17 9 16.5523 9 16C9 15.4477 8.55228 15 8 15C7.44772 15 7 15.4477 7 16C7 16.5523 7.44772 17 8 17Z" fill="currentColor"></path>
-                                            <path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z" fill="currentColor"></path>
-                                            <path d="M17 16C17 16.5523 16.5523 17 16 17C15.4477 17 15 16.5523 15 16C15 15.4477 15.4477 15 16 15C16.5523 15 17 15.4477 17 16Z" fill="currentColor"></path>
-                                            <path d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z" fill="currentColor"></path>
-                                        </svg>
-                                        <span
-                                            class="text-black rtl:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">الصلاحيات</span>
-                                    </div>
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a href="{{ route('super_admin.activity_logs.index') }}" class="{{ request()->routeIs('super_admin.activity_logs.index') ? 'active' : '' }} group">
-                                    <div class="flex items-center">
-                                        <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path opacity="0.5" d="M21 15.9983V9.99826C21 7.16983 21 5.75562 20.1213 4.87694C19.3529 4.10856 18.175 4.01211 16 4H8C5.82497 4.01211 4.64706 4.10856 3.87868 4.87694C3 5.75562 3 7.16983 3 9.99826V15.9983C3 18.8267 3 20.2409 3.87868 21.1196C4.75736 21.9983 6.17157 21.9983 9 21.9983H15C17.8284 21.9983 19.2426 21.9983 20.1213 21.1196C21 20.2409 21 18.8267 21 15.9983Z" fill="currentColor"></path>
-                                            <path d="M8 3.5C8 2.67157 8.67157 2 9.5 2H14.5C15.3284 2 16 2.67157 16 3.5V4.5C16 5.32843 15.3284 6 14.5 6H9.5C8.67157 6 8 5.32843 8 4.5V3.5Z" fill="currentColor"></path>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 9.25C12.4142 9.25 12.75 9.58579 12.75 10V12.25L15 12.25C15.4142 12.25 15.75 12.5858 15.75 13C15.75 13.4142 15.4142 13.75 15 13.75L12.75 13.75L12.75 16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16L11.25 13.75H9C8.58579 13.75 8.25 13.4142 8.25 13C8.25 12.5858 8.58579 12.25 9 12.25L11.25 12.25L11.25 10C11.25 9.58579 11.5858 9.25 12 9.25Z" fill="currentColor"></path>
-                                        </svg>
-                                        <span
-                                            class="text-black rtl:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">سجل العمليات</span>
-                                    </div>
-                                </a>
-                            </li>
+                            @if (auth('super_admin')->user()->hasPermission('read-user'))
+                                <li class="nav-item">
+                                    <a href="{{ route('super_admin.user.index') }}" class="{{ request()->routeIs('super_admin.user.*') ? 'active' : '' }} group">
+                                        <div class="flex items-center">
+                                            <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle opacity="0.5" cx="15" cy="6" r="3" fill="currentColor"></circle>
+                                                <ellipse opacity="0.5" cx="16" cy="17" rx="5" ry="3" fill="currentColor"></ellipse>
+                                                <circle cx="9.00098" cy="6" r="4" fill="currentColor"></circle>
+                                                <ellipse cx="9.00098" cy="17.001" rx="7" ry="4" fill="currentColor"></ellipse>
+                                            </svg>
+                                            <span
+                                                class="text-black rtl:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">المستخدمون</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endif
+                            @if (auth('super_admin')->user()->hasPermission('read-role'))
+                                <li class="nav-item">
+                                    <a href="{{ route('super_admin.role.index') }}" class="{{ request()->routeIs('super_admin.role.*') ? 'active' : '' }} group">
+                                        <div class="flex items-center">
+                                            <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path opacity="0.5" d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z" fill="currentColor"></path>
+                                                <path d="M8 17C8.55228 17 9 16.5523 9 16C9 15.4477 8.55228 15 8 15C7.44772 15 7 15.4477 7 16C7 16.5523 7.44772 17 8 17Z" fill="currentColor"></path>
+                                                <path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z" fill="currentColor"></path>
+                                                <path d="M17 16C17 16.5523 16.5523 17 16 17C15.4477 17 15 16.5523 15 16C15 15.4477 15.4477 15 16 15C16.5523 15 17 15.4477 17 16Z" fill="currentColor"></path>
+                                                <path d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z" fill="currentColor"></path>
+                                            </svg>
+                                            <span
+                                                class="text-black rtl:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">الصلاحيات</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endif
+                            @if (auth('super_admin')->user()->hasPermission('read-activity_log'))
+                                <li class="nav-item">
+                                    <a href="{{ route('super_admin.activity_logs.index') }}" class="{{ request()->routeIs('super_admin.activity_logs.index') ? 'active' : '' }} group">
+                                        <div class="flex items-center">
+                                            <svg class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path opacity="0.5" d="M21 15.9983V9.99826C21 7.16983 21 5.75562 20.1213 4.87694C19.3529 4.10856 18.175 4.01211 16 4H8C5.82497 4.01211 4.64706 4.10856 3.87868 4.87694C3 5.75562 3 7.16983 3 9.99826V15.9983C3 18.8267 3 20.2409 3.87868 21.1196C4.75736 21.9983 6.17157 21.9983 9 21.9983H15C17.8284 21.9983 19.2426 21.9983 20.1213 21.1196C21 20.2409 21 18.8267 21 15.9983Z" fill="currentColor"></path>
+                                                <path d="M8 3.5C8 2.67157 8.67157 2 9.5 2H14.5C15.3284 2 16 2.67157 16 3.5V4.5C16 5.32843 15.3284 6 14.5 6H9.5C8.67157 6 8 5.32843 8 4.5V3.5Z" fill="currentColor"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 9.25C12.4142 9.25 12.75 9.58579 12.75 10V12.25L15 12.25C15.4142 12.25 15.75 12.5858 15.75 13C15.75 13.4142 15.4142 13.75 15 13.75L12.75 13.75L12.75 16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16L11.25 13.75H9C8.58579 13.75 8.25 13.4142 8.25 13C8.25 12.5858 8.58579 12.25 9 12.25L11.25 12.25L11.25 10C11.25 9.58579 11.5858 9.25 12 9.25Z" fill="currentColor"></path>
+                                            </svg>
+                                            <span
+                                                class="text-black rtl:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">سجل العمليات</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
                     </li>
                 </ul>
-                
             </li>
-            @endrole
         </ul>
-        
         </div>
     </nav>
 </div>

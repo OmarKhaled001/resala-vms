@@ -29,10 +29,12 @@
                                 <a href="javascript:" class="p-5 py-3 -mb-[1px] flex items-center relative before:transition-all before:duration-700 hover:text-secondary before:absolute before:w-0 before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-[1px] before:bg-secondary hover:before:w-full" :class="{'before:w-full text-secondary' : tab === 'profile'}" @click="tab='profile'">
                                     الوسائط</a>
                             </li>
+                            @if ($event->reason)
                             <li>
                                 <a href="javascript:" class="p-5 py-3 -mb-[1px] flex items-center relative before:transition-all before:duration-700 hover:text-secondary before:absolute before:w-0 before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-[1px] before:bg-secondary hover:before:w-full" :class="{'before:w-full text-secondary' : tab === 'contact'}" @click="tab='contact'">
                                     المطابقة</a>
                             </li>
+                            @endif
                         </ul>
                     </div>
                 <div x-show="tab === 'home'">
@@ -97,28 +99,11 @@
               
                     </div>
                 </div>
+                @if ($event->reason)
                 <div x-show="tab === 'contact'">
-                    <div class="flex">
-                        <div class="ltr:mr-4 rtl:ml-4">
-                            <img src="{{ Avatar::create(auth('branch')->user()->email)->toBase64() }}" alt="image" class="w-14 h-14 rounded" />
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-lg mb-2 text-primary">{{auth('branch')->user()->email }}</h4>
-                            <p class="media-text mb-5">{{ $event->reason ?? 'تم تسجيل عدد متطوعين 5 وظاهر 6' }}</p>
-                            <div class="flex">
-                                <div class="ltr:mr-4 rtl:ml-4">
-                                    <img src="/assets/images/profile-5.jpeg" alt="image" class="w-14 h-14 rounded" />
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-lg mb-2 text-primary">Heading</h4>
-                                    <p class="media-text"> Fusce condimentum cursus mauris et ornare. Mauris fermentum mi id sollicitudin viverra. Aenean dignissim sed ante eget dapibus. Sed dapibus nulla elementum, rutrum neque eu, gravida neque. </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    @livewire('index-events', ['event' => $event])
                 </div>
-                    
+                @endif
                 </div>   
                     
                 <div class="flex justify-end items-center mt-8">

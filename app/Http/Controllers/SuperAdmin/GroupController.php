@@ -4,13 +4,25 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use Carbon\Carbon;
 use App\Models\Group;
+use App\Models\Volunteer;
 use Illuminate\Http\Request;
 use App\Exports\FormatExport;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\ActivityLogsService;
+use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
 {
+    protected $ActivityLogsService;
+
+    public function __construct(ActivityLogsService $ActivityLogsService)
+    {
+        $this->ActivityLogsService = $ActivityLogsService;
+
+        $this->middleware('permissionMiddleware:read-group,super_admin')->only('allGroup');
+        $this->middleware('permissionMiddleware:export-group,super_admin')->only('export');
+    }
     public function allGroup()
     {
         $groups = Group::all();
@@ -113,4 +125,44 @@ class GroupController extends Controller
         return Excel::download(new FormatExport($mainHeaders, $data), $fileName);
     }
 
+    public function addAdmin(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'volunteer_id' => 'required|exists:volunteers,id',
+                'username' => 'required|string|max:255|unique:volunteers,username,',
+                'email' => 'required|email|max:255|unique:volunteers,email,',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+            
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+            
+            $volunteer = Volunteer::find($request->volunteer_id);
+            $volunteer->is_admin = 1;
+            $volunteer->username = $request->username;
+            $volunteer->email = $request->email;
+            $volunteer->password = bcrypt($request->password);
+            $volunteer->save();
+            
+            $causer = auth('super_admin')->user();
+            $this->ActivityLogsService->insert([
+                'subject' => $volunteer,
+                'causer' => $causer,
+                'log_name' => 'تم تعين معلومات المتطوع: ' . $volunteer->name.'كمدير',
+                'description' => 'تم تحديث معلومات المتطوع: ' . $volunteer->name . 
+                ' (اسم المستخدم: ' . $volunteer->username . 
+                ', البريد الإلكتروني: ' . $volunteer->email . 
+                ') بتاريخ ' . now()->format('F j, Y g:i A'),
+                'event' => 'تحديث',
+                'guard' => 'super_admin',
+            ]);
+            
+            return redirect()->back()->with('success', 'تم تحديث معلومات المتطوع بنجاح.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء عملية الإنشاء: ' . $e->getMessage());
+        }
+    }
+    
 }

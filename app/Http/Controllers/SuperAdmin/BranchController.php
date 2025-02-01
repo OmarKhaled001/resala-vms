@@ -2,22 +2,29 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Models\Group;
 use App\Models\Branch;
 use App\Models\Section;
 use App\Models\Activity;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use App\Services\ActivityLogsService;
 use App\Http\Requests\SuperAdmin\BranchRequest;
-use App\Models\Group;
 
 class BranchController extends Controller
 {
 
     protected $ActivityLogsService;
+    
     public function __construct(ActivityLogsService $ActivityLogsService)
     {
         $this->ActivityLogsService = $ActivityLogsService;
+        $this->middleware('permissionMiddleware:read-branch,super_admin')->only('allBranch');
+        $this->middleware('permissionMiddleware:create-branch,super_admin')->only('createForm');
+        $this->middleware('permissionMiddleware:create-branch,super_admin')->only('storeBranch');
+        $this->middleware('permissionMiddleware:update-branch,super_admin')->only('editForm');
+        $this->middleware('permissionMiddleware:update-branch,super_admin')->only('updateBranch');
+        $this->middleware('permissionMiddleware:delete-branch,super_admin')->only('destroyBranch');
     }
     
     

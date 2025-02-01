@@ -1,5 +1,5 @@
 <div>
- 
+    <form wire:submit.prevent="createEvent" enctype="multipart/form-data">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-5">
         <div class="mb-2">
             <div x-data="form">
@@ -178,10 +178,12 @@
         </table>
     </div>
     @endif
+    <div class="my-5">
+        <label for="ctnTextarea">صورة الحدث</label>
 
-
-
-    <div class="my-2">
+        <x-filepond::upload wire:model="files" multiple class="dark:bg-[#060818]"/> 
+       </div>
+    <div class="my-3">
         <label for="ctnTextarea">ملاحظات</label>
         <textarea id="ctnTextarea" rows="3" class="form-textarea"
             placeholder="اكتب ملاحظات الحدث والتفاصل الاضافية ان وجد " wire:model="notes"></textarea>
@@ -191,11 +193,14 @@
 
     <div class="flex space-x-2 !mt-6">
 
-        <button  wire:click="createEvent('volunteer.event.index')" class="btn btn-primary ml-3">إضافة </button>
-        <button  wire:click="createEvent('volunteer.event.create.media')" class="btn btn-primary ">إضافة وسائط </button>
+        <button  type="submit" class="btn btn-primary ml-3">إضافة </button>
     </div>
+    </form>
     @section('script')
- 
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+    <script>
+        FilePond.create(document.querySelector('.filepond'));
+    </script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <link rel="stylesheet" href="{{ asset('assets') }}/css/highlight.min.css" />
         <script src="{{ asset('assets') }}/js/highlight.min.js"></script>
@@ -204,6 +209,7 @@
         <script src="{{ asset('assets') }}/js/nice-select2.js"></script>
         <script src="{{ asset('assets') }}/js/nouislider.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js"></script>
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -265,7 +271,9 @@
                 });
             });
         </script>
+      
        
     @endsection
+
 
 </div>

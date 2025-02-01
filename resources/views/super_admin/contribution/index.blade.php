@@ -50,7 +50,7 @@
                             </span>
                         </td>
 
-                        <td style="text-align: center;">
+                        <td >
                             <ul class="flex items-center justify-center gap-2">
                                 <li x-data="modal">
                                     <a @click="toggle" x-tooltip=" تعديل" class="hover:text-info">

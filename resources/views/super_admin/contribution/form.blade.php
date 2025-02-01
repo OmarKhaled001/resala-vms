@@ -35,7 +35,6 @@
             @error('description')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
-
         </div>
         <div class="my-3">
             <label for="description">الحالة</label>

@@ -7,15 +7,17 @@ use App\Models\Section;
 use Livewire\Component;
 use App\Models\Volunteer;
 use App\Models\Contribution;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Livewire\WithFileUploads;
 use Intervention\Image\Facades\Image;
+use Spatie\LivewireFilepond\Filepond;
+use Spatie\LivewireFilepond\WithFilePond;
 
 class IndexVolunteer extends Component
 {
-    use WithFileUploads;
-
+    use WithFilePond , WithFileUploads;
+    public $files = [];
     public $sections = [];          // الأقسام
     public $section_id;             // القسم المختار
     public $contributions = [];     // المساهمات
@@ -34,6 +36,8 @@ class IndexVolunteer extends Component
     ];
    
     public $images = []; 
+    public $eventId = null; // معرف الحدث الذي يتم تعديله
+    public $isEditing = false; // حالة التعديل
 
     public function mount()
     {
@@ -116,7 +120,7 @@ class IndexVolunteer extends Component
     }
 
 
-    public function createEvent($redirectRoute)
+    public function createEvent()
     {
 
         DB::beginTransaction();
@@ -140,9 +144,17 @@ class IndexVolunteer extends Component
                     'tshirt' => $this->selectedVolunteersShirts[$volunteerId]['tshirt'] ?? 0, 
                 ]);
             }
+
+            foreach ($this->files as $file) {
+                
+                $event->addMedia($file->getRealPath())
+                      ->toMediaCollection('images');
+            }
+    
+            $this->reset('files');
      
             DB::commit();
-            $this->redirectRoute($redirectRoute,['id' => $event->id]);
+            $this->redirectRoute('volunteer.event.index');
 
             // Reset the form and selected volunteers
         } catch (\Exception $e) {
@@ -151,6 +163,83 @@ class IndexVolunteer extends Component
         }
     }
 
+    public function editEvent($eventId)
+    {
+        $this->isEditing = true;
+        $this->eventId = $eventId;
+
+        // تحميل بيانات الحدث
+        $event = Event::with('volunteers')->find($eventId);
+
+        if ($event) {
+            $this->event_date = $event->event_date;
+            $this->section_id = $event->section_id;
+            $this->contribution_id = $event->contribution_id;
+            $this->notes = $event->notes;
+
+            // تحميل المتطوعين المختارين
+            $this->selectedVolunteers = $event->volunteers->pluck('pivot.tshirt', 'id')->toArray();
+        }
+    }
+
+    public function updateEvent()
+    {
+        DB::beginTransaction();
+
+        try {
+            // تحديث الحدث
+            $event = Event::find($this->eventId);
+
+            if ($event) {
+                $event->event_date = $this->event_date;
+                $event->contribution_id = $this->contribution_id;
+                $event->section_id = $this->section_id;
+                $event->notes = $this->notes;
+                $event->save();
+
+                // تحديث المتطوعين المختارين
+                $event->volunteers()->sync([]); // إزالة المتطوعين الحاليين
+                foreach ($this->selectedVolunteers as $volunteerId => $volunteerData) {
+                    $event->volunteers()->attach($volunteerId, [
+                        'event_date' => $this->event_date,
+                        'tshirt' => $this->selectedVolunteersShirts[$volunteerId]['tshirt'] ?? 0,
+                    ]);
+                }
+
+                // تحديث الصور
+                foreach ($this->files as $file) {
+                    $event->addMedia($file->getRealPath())
+                        ->toMediaCollection('images');
+                }
+
+                $this->reset('files');
+            }
+
+            DB::commit();
+            $this->redirectRoute('volunteer.event.index');
+
+            // إعادة تعيين الحقول
+            $this->resetForm();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('error', 'حدث خطأ أثناء تحديث الحدث. يرجى المحاولة مرة أخرى.');
+        }
+    }
+
+    public function resetForm()
+    {
+        $this->reset([
+            'event_date',
+            'section_id',
+            'contribution_id',
+            'notes',
+            'selectedVolunteers',
+            'selectedVolunteersShirts',
+            'files',
+            'eventId',
+            'isEditing',
+        ]);
+    }
 
 
 
@@ -170,6 +259,9 @@ class IndexVolunteer extends Component
                 ->get()
             : null;
 
-        return view('livewire.index-volunteer', compact('volunteers'));
+        return view('livewire.index-volunteer', [
+            'volunteers' => $volunteers,
+            // 'filepond' => Filepond::create(),
+        ]);
     }
 }

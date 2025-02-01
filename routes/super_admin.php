@@ -21,11 +21,10 @@ Route::middleware('guest:super_admin')->group(function () {
 Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware( ['auth:super_admin'])->group(function(){
-    
+    //------- User --------//
     Route::get('/',[PageController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::middleware( ['role:owner'])->group(function(){
-        //------- User --------//
         Route::group(
             ['prefix' => 'user', 'as' => 'user.'],
             function () {
@@ -35,8 +34,7 @@ Route::middleware( ['auth:super_admin'])->group(function(){
                 Route::post('/delete/{user}',          [UserController::class, 'destroyUser'])  ->name('destroy');
             }
         );
-
-        //------- Role and Permeation --------//
+    //------- Role and Permeation --------//
         Route::group(
             ['prefix' => 'role', 'as' => 'role.'],
             function () {
@@ -48,11 +46,8 @@ Route::middleware( ['auth:super_admin'])->group(function(){
                 Route::post('/delete/{role}',      [RoleController::class, 'destroyRole'])         ->name('destroy');
             }
         );
-
-        Route::get('activity_logs/',              [ActivityLogController::class, 'index'])         ->name('activity_logs.index');
-
+        Route::get('activity_logs/',               [ActivityLogController::class, 'index'])        ->name('activity_logs.index');
     });
-
     //------- Branch --------//
     Route::group(
         ['prefix' => 'branch', 'as' => 'branch.'],
@@ -110,7 +105,8 @@ Route::middleware( ['auth:super_admin'])->group(function(){
         ['prefix' => 'group', 'as' => 'group.'],
         function () {
             Route::get('/',                    [GroupController::class, 'allGroup'])        ->name('index');
-            Route::post('/export',             [GroupController::class, 'export'])             ->name('export');
+            Route::post('/export',             [GroupController::class, 'export'])          ->name('export');
+            Route::post('/add-admin',          [GroupController::class, 'addAdmin'])        ->name('add.admin');
         }
     );
     Route::get('/weekly-statistics', [PageController::class, 'getWeeklyVolunteerStatistics'])->name('weekly.statistics');
