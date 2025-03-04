@@ -25,5 +25,4 @@
         }
     </style>
     
-@filepondStyles
 </head>

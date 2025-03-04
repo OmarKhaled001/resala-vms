@@ -42,6 +42,7 @@ Route::middleware(['auth:volunteer'])->group(function () {
         ['prefix' => 'vol', 'as' => 'vol.'],
         function () {
             Route::get('/', [VolunteerController::class, 'allVolunteers'])->name('index');
+            Route::get('/create', [VolunteerController::class, 'createVolunteer'])->name('create');
             Route::get('/teem-work', [VolunteerController::class, 'teemWork'])->name('teemWork');
             Route::post('/filter', [VolunteerController::class, 'volunteerFilter'])->name('filter');
    

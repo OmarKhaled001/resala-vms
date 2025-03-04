@@ -101,7 +101,7 @@
 
                         <td class="text-center">
                             <ul class="flex items-center justify-center gap-2">
-                                <li >
+                                {{-- <li >
                                     <a href="{{ route('volunteer.event.edit',$event->id) }}" x-tooltip="تعديل" class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
                                             <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
@@ -109,7 +109,7 @@
                                             <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
                                         </svg>
                                     </a>
-                                </li>
+                                </li> --}}
                                 <li x-data="modal">
                                     <a @click="toggle" x-tooltip="عرض" class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"

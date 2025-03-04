@@ -66,6 +66,14 @@ class VolunteerController extends Controller
         return response()->json($volunteers);
     }
 
+    public function createVolunteer() {
+        $user = auth('volunteer')->user();
+        $sections = $user->activity->sections;
+
+        return view('volunteer.vol.create',compact('sections'));
+        
+    }
+
     public function shortStore(Request $request)
     {
         try {

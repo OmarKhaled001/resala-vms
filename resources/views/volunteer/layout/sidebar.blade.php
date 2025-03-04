@@ -111,10 +111,10 @@
                                         <a href="{{ route('volunteer.vol.teemWork') }}" class="{{ request()->routeIs('volunteer.vol.teemWork') ? 'active' : '' }}">فريق العمل</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('volunteer.vol.index') }}" class="{{ request()->routeIs('volunteer.vol.index') ? 'active' : '' }}">استمارة تطوع</a>
+                                        {{-- <a href="{{ route('volunteer.vol.create') }}" class="{{ request()->routeIs('volunteer.vol.create') ? 'active' : '' }}">استمارة تطوع</a> --}}
                                     </li>
                                     <li>
-                                        <a href="{{ route('volunteer.vol.index') }}" class="{{ request()->routeIs('volunteer.vol.index') ? 'active' : '' }}">التعديلات </a>
+                                        {{-- <a href="{{ route('volunteer.vol.index') }}" class="{{ request()->routeIs('volunteer.vol.index') ? 'active' : '' }}">التعديلات </a> --}}
                                     </li>
                                 </ul>
                             </li>
