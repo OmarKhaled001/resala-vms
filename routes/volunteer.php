@@ -4,7 +4,7 @@ use Livewire\Livewire;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Volunteer\AuthController;
-use App\Http\Controllers\volunteer\PageController;
+use App\Http\Controllers\Volunteer\PageController;
 use App\Http\Controllers\Volunteer\EventController;
 use App\Http\Controllers\SuperAdmin\SectionController;
 use App\Http\Controllers\Volunteer\VolunteerController;
