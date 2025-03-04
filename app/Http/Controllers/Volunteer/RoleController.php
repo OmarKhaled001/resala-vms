@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\SuperAdmin;
+namespace App\Http\Controllers\Volunteer;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
