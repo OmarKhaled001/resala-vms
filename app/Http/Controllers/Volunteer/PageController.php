@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\volunteer;
+namespace App\Http\Controllers\Volunteer;
 
 use App\Models\Event;
 use App\Models\Volunteer;
