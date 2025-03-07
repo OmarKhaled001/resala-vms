@@ -1,6 +1,5 @@
-<div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-5">
+<div class="grid grid-cols-4 gap-6 lg:grid-cols-3 mb-5">
   
-    <div class="mb-2">
       
         <div>
             <label for="name">الاسم</label>
@@ -20,7 +19,6 @@
                 <option value="{{ $section->id }}">{{ $section->name }}</option>
             @endforeach
         </select>
-    </div>
 
 
 
