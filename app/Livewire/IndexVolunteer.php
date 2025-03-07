@@ -54,6 +54,13 @@ class IndexVolunteer extends Component
 
     public function addNewVolunteer()
     {
+        $fullName = $this->newVolunteer['name'];
+        $nameParts = explode(' ', trim($fullName));
+
+        if (count($nameParts) < 3) {
+            $this->addError('newVolunteer.name', 'الاسم يجب أن يكون ثلاثي على الأقل.');
+            return;
+        }
         $validatedData = $this->validate([
             'newVolunteer.name' => 'required|string|max:255|regex:/^[\pL\s]+$/u',
             'newVolunteer.phone' => 'required|string|regex:/^\+?\d{10,15}$/',
