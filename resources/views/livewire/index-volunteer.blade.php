@@ -74,14 +74,14 @@
                             </div>
                             <div class="my-3">
                                 <label for="volunteer_date">تاريخ التطوع</label>
-                                <input id="date-input-modal"  wire:model.defer="newVolunteer.vol_date" class="form-input" placeholder="ادخل  تاريخ التطوع"/>
+                                <input type="date"  wire:model.defer="newVolunteer.vol_date" class="form-input" placeholder="ادخل  تاريخ التطوع"/>
                                 @error('newVolunteer.vol_date') <span class="text-danger">{{ $message }}</span> @enderror
 
                             </div>
                             
                             <div class="my-3">
                                 <label for="birth_date">تاريخ الميلاد</label>
-                                <input id="date-input-modal"  wire:model.defer="newVolunteer.birth_date" class="form-input" placeholder="ادخل  تاريخ الميلاد" />
+                                <input type="date"  wire:model.defer="newVolunteer.birth_date" class="form-input" placeholder="ادخل  تاريخ الميلاد" />
                                 @error('newVolunteer.birth_date') <span class="text-danger">{{ $message }}</span> @enderror
 
                             </div>
