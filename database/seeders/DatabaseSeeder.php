@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(LaratrustSeeder::class);
         // $this->call(ContributionSeeder::class);
-        // $this->call(SectionSeeder::class);
-        // $this->call(ActivitySeeder::class);
-        // $this->call(BranchSeeder::class);
+        $this->call(SectionSeeder::class);
+        $this->call(ActivitySeeder::class);
+        $this->call(BranchSeeder::class);
     }
 }
