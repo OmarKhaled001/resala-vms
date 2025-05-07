@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\HasMedia;
 
-class Volunteer extends Authenticatable
+class Volunteer extends Authenticatable implements HasMedia
 {
-    use HasFactory  ,HasRolesAndPermissions;
+    use HasFactory  ,HasRolesAndPermissions , InteractsWithMedia;
 
     protected $table = 'volunteers';
-    
+
     protected $guard = 'volunteer';
 
     public $timestamps = true;
@@ -48,25 +50,25 @@ class Volunteer extends Authenticatable
         'vol_date' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
-    
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     public function section()
-    { 
-        return $this->belongsTo(Section::class); 
+    {
+        return $this->belongsTo(Section::class);
     }
-    
+
     public function branch()
-    { 
-        return $this->belongsTo(Branch::class); 
+    {
+        return $this->belongsTo(Branch::class);
     }
-    
+
     public function activity()
-    { 
-        return $this->belongsTo(Activity::class); 
+    {
+        return $this->belongsTo(Activity::class);
     }
     public function events()
     {
@@ -96,7 +98,7 @@ class Volunteer extends Authenticatable
         ->whereBetween('event_volunteer.event_date', [$startOfMonth, $endOfMonth])
         ->distinct('event_volunteer.event_date')
         ->count() ;
-      
+
 
     }
 
@@ -105,15 +107,15 @@ class Volunteer extends Authenticatable
     {
         $startOfMonth = now()->startOfMonth();
         $endOfMonth = now()->endOfMonth();
-    
+
         $uniqueDailyParticipations = $this->events()
             ->whereBetween('event_volunteer.event_date', [$startOfMonth, $endOfMonth])
             ->distinct('event_volunteer.event_date')
             ->count();
-    
+
         return min($uniqueDailyParticipations, 8);
     }
-    
+
 
     public function authoredComments()
     {
@@ -123,5 +125,7 @@ class Volunteer extends Authenticatable
     {
         return $this->morphMany(CommentRead::class, 'reader');
     }
+
+
 
 }

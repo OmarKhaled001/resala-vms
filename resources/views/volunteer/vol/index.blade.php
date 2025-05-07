@@ -23,17 +23,17 @@
         </li>
     </ul>
     <div class="flex flex-wrap mt-3 mb-5 ">
-        <a href="{{ route('volunteer.event.create') }}" class="btn btn-outline-primary ml-3">إضافة متطوع</a>
+        <a href="{{ route('volunteer.event.create') }}" class="ml-3 btn btn-outline-primary">إضافة متطوع</a>
         <!-- button -->
         <div x-data="modal">
-            <div class="flex items-center justify-center  ml-3">
+            <div class="flex items-center justify-center ml-3">
                 <button type="button" class="btn btn-outline-primary" @click="toggle">فلتر</button>
                 @include('volunteer.vol.filter')
 
             </div>
         </div>
         {{-- <div x-data="modal">
-            <div class="flex items-center justify-center  ml-3">
+            <div class="flex items-center justify-center ml-3">
                 <button type="button" class="btn btn-outline-success" @click="toggle"><svg
                         class="shrink-0 group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,9 +48,9 @@
             </div>
             @include('volunteer.event.charts')
         </div> --}}
-        <a href="{{ route('volunteer.vol.index') }}" class="btn btn-primary ml-3">
+        <a href="{{ route('volunteer.vol.index') }}" class="ml-3 btn btn-primary">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5">
+                class="w-5 h-5">
                 <path
                     d="M12.0789 3V2.25V3ZM3.67981 11.3333H2.92981H3.67981ZM3.67981 13L3.15157 13.5324C3.44398 13.8225 3.91565 13.8225 4.20805 13.5324L3.67981 13ZM5.88787 11.8657C6.18191 11.574 6.18377 11.0991 5.89203 10.8051C5.60029 10.511 5.12542 10.5092 4.83138 10.8009L5.88787 11.8657ZM2.52824 10.8009C2.2342 10.5092 1.75933 10.511 1.46759 10.8051C1.17585 11.0991 1.17772 11.574 1.47176 11.8657L2.52824 10.8009ZM18.6156 7.39279C18.8325 7.74565 19.2944 7.85585 19.6473 7.63892C20.0001 7.42199 20.1103 6.96007 19.8934 6.60721L18.6156 7.39279ZM12.0789 2.25C7.03155 2.25 2.92981 6.3112 2.92981 11.3333H4.42981C4.42981 7.15072 7.84884 3.75 12.0789 3.75V2.25ZM2.92981 11.3333L2.92981 13H4.42981L4.42981 11.3333H2.92981ZM4.20805 13.5324L5.88787 11.8657L4.83138 10.8009L3.15157 12.4676L4.20805 13.5324ZM4.20805 12.4676L2.52824 10.8009L1.47176 11.8657L3.15157 13.5324L4.20805 12.4676ZM19.8934 6.60721C18.287 3.99427 15.3873 2.25 12.0789 2.25V3.75C14.8484 3.75 17.2727 5.20845 18.6156 7.39279L19.8934 6.60721Z"
                     fill="currentColor"></path>
@@ -66,7 +66,7 @@
 
 
 
-    <div class="panel mt-5 dark:text-white-light">
+    <div class="mt-5 panel dark:text-white-light">
 
         <table id="myTable" class="table-responsive myTable dark:text-white-light">
             <thead>
@@ -87,24 +87,32 @@
                         <td class="text-center">{{ $volunteer->phone }}</td>
                         <td class="text-center">
                             <span class="badge {{ $volunteer->getTypeBadgeClass() }}">
-                                {{ $volunteer->type  ?? 'داخل المتابعة'}}
+                                {{ $volunteer->type ?? 'داخل المتابعة' }}
                             </span>
                         </td>
                         <td class="text-center">{{ $volunteer->getMonthlyCountAttribute() ?? 0 }}</td>
 
                         <td class="text-center">
                             <ul class="flex items-center justify-center gap-2">
-                                {{-- <li x-data="modal">
-                                    <a href="{{ route('volunteer.event.edit',$event->id) }}" x-tooltip="تعديل" class="hover:text-info">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
-                                            <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                            <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
-                                            <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                <li x-data="modal">
+                                    <a href="{{ route('volunteer.vol.edit', $event->id) }}" x-tooltip="تعديل"
+                                        class="hover:text-info">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                            <path opacity="0.5"
+                                                d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                            <path
+                                                d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z"
+                                                stroke="currentColor" stroke-width="1.5"></path>
+                                            <path opacity="0.5"
+                                                d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9"
+                                                stroke="currentColor" stroke-width="1.5"></path>
                                         </svg>
                                     </a>
                                     @include('branch.event.change-status')
 
-                                </li> --}}
+                                </li>
                                 <li x-data="modal">
                                     <a @click="toggle" x-tooltip="عرض" class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -122,14 +130,14 @@
                                 <li>
                                     <a href="javascript:;" x-tooltip="حذف" @click="showDeleteAlert({{ $volunteer->id }})">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
+                                            xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-danger">
                                             <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5"
                                                 stroke-linecap="round"></path>
                                             <path
                                                 d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5"
                                                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                            <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor"
-                                                stroke-width="1.5" stroke-linecap="round"></path>
+                                            <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round"></path>
                                             <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor"
                                                 stroke-width="1.5" stroke-linecap="round"></path>
                                             <path opacity="0.5"
@@ -389,7 +397,7 @@
             }));
         });
     </script> --}}
-    
+
 
 
 
