@@ -13,25 +13,25 @@
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 
                 <div>
-                    <label for="name" class="block mb-1">الاسم<span class="text-red-500">*</span></label>
+                    <label for="name" class="block mb-1">الاسم<span class="text-danger">*</span></label>
                     <input type="text" id="name" name="name" placeholder="ادخل اسم المتطوع ثلاثي"
                         class="w-full form-input" value="{{ old('name', $volunteer->name ?? '') }}" required />
                     @error('name')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div>
-                    <label for="phone" class="block mb-1">رقم الهاتف<span class="text-red-500">*</span></label>
+                    <label for="phone" class="block mb-1">رقم الهاتف<span class="text-danger">*</span></label>
                     <input type="text" id="phone" name="phone" placeholder="ادخل رقم الهاتف"
                         class="w-full form-input" value="{{ old('phone', $volunteer->phone ?? '') }}" required />
                     @error('phone')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div>
-                    <label class="block mb-1">النوع (الجنس)<span class="text-red-500">*</span></label>
+                    <label class="block mb-1">النوع (الجنس)<span class="text-danger">*</span></label>
                     <div class="flex items-center gap-4">
                         <label class="flex items-center gap-2">
                             <input type="radio" name="gender" value="1" class="form-radio text-info"
@@ -45,27 +45,27 @@
                         </label>
                     </div>
                     @error('gender')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div>
-                    <label for="birth_date" class="block mb-1">تاريخ الميلاد<span class="text-red-500">*</span></label>
+                    <label for="birth_date" class="block mb-1">تاريخ الميلاد<span class="text-danger">*</span></label>
                     <input id="birth_date" name="birth_date" type="date" class="w-full form-input"
                         value="{{ old('birth_date', $volunteer->birth_date ?? '') }}" placeholder="ادخل تاريخ الميلاد"
                         required />
                     @error('birth_date')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div>
-                    <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-red-500">*</span></label>
+                    <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-danger">*</span></label>
                     <input id="vol_date" name="vol_date" type="date" class="w-full form-input"
                         value="{{ old('vol_date', $volunteer->vol_date ??'') }}"
                         placeholder="ادخل تاريخ التطوع" required />
                     @error('vol_date')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
@@ -74,7 +74,7 @@
                     <input type="text" id="address" name="address" placeholder="ادخل العنوان"
                         class="w-full form-input" value="{{ old('address', $volunteer->address ?? '') }}" />
                     @error('address')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
@@ -83,7 +83,7 @@
                     <input type="text" id="national" name="national" placeholder="ادخل الجنسية"
                         class="w-full form-input" value="{{ old('national', $volunteer->national ?? '') }}" />
                     @error('national')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
@@ -111,7 +111,7 @@
                             المتابعة</option>
                     </select>
                     @error('type')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 @endif
@@ -127,7 +127,7 @@
                         @endforeach
                     </select>
                     @error('section_id')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
@@ -144,7 +144,7 @@
                             {{ old('position', $volunteer->position ?? '') == 'عضو' ? 'selected' : '' }}>عضو</option>
                     </select>
                     @error('position')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
@@ -180,7 +180,7 @@
                     <div id="profile_photos_preview_container" class="mt-2 flex flex-wrap gap-2"></div>
                     <button type="button" id="clear_profile_photos" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح الصور الشخصية المحددة</button>
                     @error('profile_photos.*')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div>
@@ -190,7 +190,7 @@
                     <div id="id_card_preview_container" class="mt-2"></div>
                     <button type="button" id="clear_id_card" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح صورة البطاقة المحددة</button>
                     @error('id_card')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div>
@@ -200,7 +200,7 @@
                     <div id="donation_receipts_preview_container" class="mt-2 flex flex-wrap gap-2"></div>
                     <button type="button" id="clear_donation_receipts" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح الإيصالات المحددة</button>
                     @error('donation_receipts.*')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
+                        <span class="text-sm text-danger">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
@@ -213,7 +213,7 @@
                 <textarea id="notes" name="notes" rows="4" class="w-full form-textarea"
                     placeholder="اكتب ملاحظات الحدث والتفاصيل الإضافية إن وجد">{{ old('notes', $volunteer->notes ?? '') }}</textarea>
                 @error('notes')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
+                    <span class="text-sm text-danger">{{ $message }}</span>
                 @enderror
             </div>
         </div>
