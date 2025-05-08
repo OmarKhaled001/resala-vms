@@ -1,100 +1,3 @@
-
-  
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    function setupFileInput(inputId, previewContainerId, clearButtonId, isMultiple) {
-        const fileInput = document.getElementById(inputId);
-        const previewContainer = document.getElementById(previewContainerId);
-        const clearButton = document.getElementById(clearButtonId);
-
-        if (!fileInput || !previewContainer || !clearButton) {
-            // console.warn(`Initialization failed: One or more elements not found for input ID ${inputId}. Ensure IDs in HTML match those in JavaScript.`);
-            return;
-        }
-
-        fileInput.addEventListener('change', function(event) {
-            // Clear previous previews explicitly by removing child elements
-            while (previewContainer.firstChild) {
-                // Revoke object URL if the child was an image using it
-                const imgElement = previewContainer.firstChild.querySelector('img');
-                if (imgElement && imgElement.src.startsWith('blob:')) {
-                    URL.revokeObjectURL(imgElement.src);
-                }
-                previewContainer.removeChild(previewContainer.firstChild);
-            }
-
-            const files = event.target.files;
-
-            if (files.length === 0) {
-                clearButton.style.display = 'none';
-                return;
-            }
-
-            clearButton.style.display = 'inline-block';
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const filePreviewWrapper = document.createElement('div');
-                filePreviewWrapper.className = 'inline-flex flex-col items-center p-2 border rounded-md shadow-sm max-w-[120px]'; // Added max-width for consistency
-
-                let objectURL = null;
-
-                if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    objectURL = URL.createObjectURL(file);
-                    img.src = objectURL;
-                    img.className = 'h-24 w-24 object-contain rounded-md'; // Changed to object-contain
-                    // img.onload = () => URL.revokeObjectURL(objectURL); // Revoke on load can be problematic if element is removed before load
-                    filePreviewWrapper.appendChild(img);
-                } else if (file.type === 'application/pdf') {
-                    const pdfIconContainer = document.createElement('div');
-                    pdfIconContainer.className = 'h-24 w-24 flex items-center justify-center bg-gray-100 rounded-md text-gray-500';
-                    pdfIconContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V8.414a1 1 0 00-.293-.707l-4.586-4.586A1 1 0 0011.586 2H4zm7 6a1 1 0 011-1h.01a1 1 0 110 2H12a1 1 0 01-1-1zM9 9a1 1 0 00-1 1v4a1 1 0 102 0V10a1 1 0 00-1-1z" clip-rule="evenodd" /></svg><span class="mt-1 text-xs">PDF</span>';
-                    filePreviewWrapper.appendChild(pdfIconContainer);
-                } else {
-                    const genericPreview = document.createElement('div');
-                    genericPreview.className = 'h-24 w-24 flex flex-col items-center justify-center bg-gray-100 rounded-md text-gray-500 text-sm p-1';
-                    genericPreview.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg><span>ملف</span>';
-                    filePreviewWrapper.appendChild(genericPreview);
-                }
-
-                const fileName = document.createElement('p');
-                fileName.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
-                fileName.className = 'text-xs mt-1 text-center break-all'; // break-all for long names
-                filePreviewWrapper.appendChild(fileName);
-
-                // Store the objectURL with the element for later cleanup if it's an image
-                if (objectURL) {
-                    filePreviewWrapper.dataset.objectURL = objectURL;
-                }
-
-                previewContainer.appendChild(filePreviewWrapper);
-
-                if (!isMultiple) break;
-            }
-        });
-
-        clearButton.addEventListener('click', function() {
-            fileInput.value = null;
-            // Clear previews and revoke URLs
-            while (previewContainer.firstChild) {
-                const wrapper = previewContainer.firstChild;
-                if (wrapper.dataset && wrapper.dataset.objectURL) {
-                    URL.revokeObjectURL(wrapper.dataset.objectURL);
-                }
-                previewContainer.removeChild(wrapper);
-            }
-            clearButton.style.display = 'none';
-        });
-    }
-
-    // Initialize for each file input
-    setupFileInput('profile_photos', 'profile_photos_preview_container', 'clear_profile_photos', true);
-    setupFileInput('id_card', 'id_card_preview_container', 'clear_id_card', false);
-    setupFileInput('donation_receipts', 'donation_receipts_preview_container', 'clear_donation_receipts', true);
-});
-</script>
 <form action="{{ isset($volunteer) ? route('volunteer.vol.update') : route('volunteer.vol.store') }}"
     method="POST" enctype="multipart/form-data">
     @csrf
@@ -104,81 +7,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     @endif
-<form-wizard color="#4361ee" class="circle">
-  <tab-content
-    title="المعلومات الشخصية"
-    customIcon='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"><path opacity="0.5" d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z" stroke="currentColor" stroke-width="1.5"></path><path d="M12 15L12 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>'
-  >
+    <div class="space-y-8">
+        <div class="p-6 rounded-lg shadow">
+            <h3 class="pb-2 mb-6 text-lg font-semibold ">المعلومات الشخصية</h3>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-  
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-    <div>
-        <label for="name" class="block mb-1">الاسم<span class="text-danger">*</span></label>
-        <input type="text" id="name" name="name" placeholder="ادخل اسم المتطوع ثلاثي"
-            class="w-full form-input" value="{{ old('name', $volunteer->name ?? '') }}" required />
-        @error('name')
-            <span class="text-sm text-danger">{{ $message }}</span>
-        @enderror
-    </div>
+                <div>
+                    <label for="name" class="block mb-1">الاسم<span class="text-danger">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="ادخل اسم المتطوع ثلاثي"
+                        class="w-full form-input" value="{{ old('name', $volunteer->name ?? '') }}" required />
+                    @error('name')
+                        <span class="text-sm text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
 
-    <div>
-        <label for="phone" class="block mb-1">رقم الهاتف<span class="text-danger">*</span></label>
-        <input type="text" id="phone" name="phone" placeholder="ادخل رقم الهاتف"
-            class="w-full form-input" value="{{ old('phone', $volunteer->phone ?? '') }}" required />
-        @error('phone')
-            <span class="text-sm text-danger">{{ $message }}</span>
-        @enderror
-    </div>
+                <div>
+                    <label for="phone" class="block mb-1">رقم الهاتف<span class="text-danger">*</span></label>
+                    <input type="text" id="phone" name="phone" placeholder="ادخل رقم الهاتف"
+                        class="w-full form-input" value="{{ old('phone', $volunteer->phone ?? '') }}" required />
+                    @error('phone')
+                        <span class="text-sm text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
 
-    <div>
-        <label class="block mb-1">النوع (الجنس)<span class="text-danger">*</span></label>
-        <div class="flex items-center gap-4">
-            <label class="flex items-center gap-2">
-                <input type="radio" name="gender" value="1" class="form-radio text-info"
-                    {{ old('gender', $volunteer->gender ?? '') == 1 ? 'checked' : '' }} required />
-                <span>ذكر</span>
-            </label>
-            <label class="flex items-center gap-2">
-                <input type="radio" name="gender" value="2" class="form-radio text-danger"
-                    {{ old('gender', $volunteer->gender ?? '') == 2 ? 'checked' : '' }} required />
-                <span>أنثى</span>
-            </label>
-        </div>
-        @error('gender')
-            <span class="text-sm text-danger">{{ $message }}</span>
-        @enderror
-    </div>
+                <div>
+                    <label class="block mb-1">النوع (الجنس)<span class="text-danger">*</span></label>
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="gender" value="1" class="form-radio text-info"
+                                {{ old('gender', $volunteer->gender ?? '') == 1 ? 'checked' : '' }} required />
+                            <span>ذكر</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="gender" value="2" class="form-radio text-danger"
+                                {{ old('gender', $volunteer->gender ?? '') == 2 ? 'checked' : '' }} required />
+                            <span>أنثى</span>
+                        </label>
+                    </div>
+                    @error('gender')
+                        <span class="text-sm text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
 
-    <div>
-        <label for="birth_date" class="block mb-1">تاريخ الميلاد<span class="text-danger">*</span></label>
-        <input id="birth_date" name="birth_date" type="date" class="w-full form-input"
-            value="{{ old('birth_date', $volunteer->birth_date ?? '') }}" placeholder="ادخل تاريخ الميلاد"
-            required />
-        @error('birth_date')
-            <span class="text-sm text-danger">{{ $message }}</span>
-        @enderror
-    </div>
+                <div>
+                    <label for="birth_date" class="block mb-1">تاريخ الميلاد<span class="text-danger">*</span></label>
+                    <input id="birth_date" name="birth_date" type="date" class="w-full form-input"
+                        value="{{ old('birth_date', $volunteer->birth_date ?? '') }}" placeholder="ادخل تاريخ الميلاد"
+                        required />
+                    @error('birth_date')
+                        <span class="text-sm text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
 
-    <div>
-        <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-danger">*</span></label>
-        <input id="vol_date" name="vol_date" type="date" class="w-full form-input"
-            value="{{ old('vol_date', $volunteer->vol_date ??'') }}"
-            placeholder="ادخل تاريخ التطوع" required />
-        @error('vol_date')
-            <span class="text-sm text-danger">{{ $message }}</span>
-        @enderror
-    </div>
-</div>
+                <div>
+                    <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-danger">*</span></label>
+                    <input id="vol_date" name="vol_date" type="date" class="w-full form-input"
+                        value="{{ old('vol_date', $volunteer->vol_date ??'') }}"
+                        placeholder="ادخل تاريخ التطوع" required />
+                    @error('vol_date')
+                        <span class="text-sm text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
 
-
-  </tab-content>
-  <tab-content
-    title="About"
-    customIcon='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"><path opacity="0.5" d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z" stroke="currentColor" stroke-width="1.5"></path><path d="M12 15L12 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>'
-  >
-
-
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <div>
                     <label for="address" class="block mb-1">العنوان</label>
                     <input type="text" id="address" name="address" placeholder="ادخل العنوان"
@@ -280,13 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         </div>
 
-
-</tab-content>
-  <tab-content
-    title="Success"
-    customIcon='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"><path opacity="0.5" d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z" stroke="currentColor" stroke-width="1.5"></path><path d="M12 15L12 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>'
-  >
-  <div class="p-6 rounded-lg shadow">
+        <div class="p-6 rounded-lg shadow">
             <h3 class="pb-2 mb-6 text-lg font-semibold ">الوسائط والمرفقات</h3>
             <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div>
@@ -321,17 +205,117 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </div>
         </div>
-  </tab-content>
-   
-  <button type="submit" class="mt-6 btn btn-primary ltr:ml-4 rtl:mr-4">
+
+        <div class="p-6 rounded-lg shadow">
+            <h3 class="pb-2 mb-4 text-lg font-semibold ">ملاحظات إضافية</h3>
+            <div>
+                <label for="notes" class="block mb-2">ملاحظات</label>
+                <textarea id="notes" name="notes" rows="4" class="w-full form-textarea"
+                    placeholder="اكتب ملاحظات الحدث والتفاصيل الإضافية إن وجد">{{ old('notes', $volunteer->notes ?? '') }}</textarea>
+                @error('notes')
+                    <span class="text-sm text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="mt-6 btn btn-primary ltr:ml-4 rtl:mr-4">
         {{ isset($volunteer) ? 'تحديث' : 'اضافة' }}
     </button>
-</form-wizard>
 
 </form>
 
-<!-- script -->
-<script lang="ts" setup>
-import { FormWizard, TabContent } from 'vue3-form-wizard';
-import 'vue3-form-wizard/dist/style.css';
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function setupFileInput(inputId, previewContainerId, clearButtonId, isMultiple) {
+        const fileInput = document.getElementById(inputId);
+        const previewContainer = document.getElementById(previewContainerId);
+        const clearButton = document.getElementById(clearButtonId);
+
+        if (!fileInput || !previewContainer || !clearButton) {
+            // console.warn(`Initialization failed: One or more elements not found for input ID ${inputId}. Ensure IDs in HTML match those in JavaScript.`);
+            return;
+        }
+
+        fileInput.addEventListener('change', function(event) {
+            // Clear previous previews explicitly by removing child elements
+            while (previewContainer.firstChild) {
+                // Revoke object URL if the child was an image using it
+                const imgElement = previewContainer.firstChild.querySelector('img');
+                if (imgElement && imgElement.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(imgElement.src);
+                }
+                previewContainer.removeChild(previewContainer.firstChild);
+            }
+
+            const files = event.target.files;
+
+            if (files.length === 0) {
+                clearButton.style.display = 'none';
+                return;
+            }
+
+            clearButton.style.display = 'inline-block';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const filePreviewWrapper = document.createElement('div');
+                filePreviewWrapper.className = 'inline-flex flex-col items-center p-2 border rounded-md shadow-sm max-w-[120px]'; // Added max-width for consistency
+
+                let objectURL = null;
+
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    objectURL = URL.createObjectURL(file);
+                    img.src = objectURL;
+                    img.className = 'h-24 w-24 object-contain rounded-md'; // Changed to object-contain
+                    // img.onload = () => URL.revokeObjectURL(objectURL); // Revoke on load can be problematic if element is removed before load
+                    filePreviewWrapper.appendChild(img);
+                } else if (file.type === 'application/pdf') {
+                    const pdfIconContainer = document.createElement('div');
+                    pdfIconContainer.className = 'h-24 w-24 flex items-center justify-center bg-gray-100 rounded-md text-gray-500';
+                    pdfIconContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V8.414a1 1 0 00-.293-.707l-4.586-4.586A1 1 0 0011.586 2H4zm7 6a1 1 0 011-1h.01a1 1 0 110 2H12a1 1 0 01-1-1zM9 9a1 1 0 00-1 1v4a1 1 0 102 0V10a1 1 0 00-1-1z" clip-rule="evenodd" /></svg><span class="mt-1 text-xs">PDF</span>';
+                    filePreviewWrapper.appendChild(pdfIconContainer);
+                } else {
+                    const genericPreview = document.createElement('div');
+                    genericPreview.className = 'h-24 w-24 flex flex-col items-center justify-center bg-gray-100 rounded-md text-gray-500 text-sm p-1';
+                    genericPreview.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg><span>ملف</span>';
+                    filePreviewWrapper.appendChild(genericPreview);
+                }
+
+                const fileName = document.createElement('p');
+                fileName.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
+                fileName.className = 'text-xs mt-1 text-center break-all'; // break-all for long names
+                filePreviewWrapper.appendChild(fileName);
+
+                // Store the objectURL with the element for later cleanup if it's an image
+                if (objectURL) {
+                    filePreviewWrapper.dataset.objectURL = objectURL;
+                }
+
+                previewContainer.appendChild(filePreviewWrapper);
+
+                if (!isMultiple) break;
+            }
+        });
+
+        clearButton.addEventListener('click', function() {
+            fileInput.value = null;
+            // Clear previews and revoke URLs
+            while (previewContainer.firstChild) {
+                const wrapper = previewContainer.firstChild;
+                if (wrapper.dataset && wrapper.dataset.objectURL) {
+                    URL.revokeObjectURL(wrapper.dataset.objectURL);
+                }
+                previewContainer.removeChild(wrapper);
+            }
+            clearButton.style.display = 'none';
+        });
+    }
+
+    // Initialize for each file input
+    setupFileInput('profile_photos', 'profile_photos_preview_container', 'clear_profile_photos', true);
+    setupFileInput('id_card', 'id_card_preview_container', 'clear_id_card', false);
+    setupFileInput('donation_receipts', 'donation_receipts_preview_container', 'clear_donation_receipts', true);
+});
 </script>
+
