@@ -304,7 +304,7 @@ class VolunteerController extends Controller
         // --- DEBUG POINT 2: Check if validation fails ---
         if ($validator->fails()) {
             Log::error('Volunteer update validation failed', $validator->errors()->toArray());
-             dd($validator->errors()); // <-- ألغِ التعليق عن هذا السطر
+             // dd($validator->errors()); // <-- تم التحقق من هذه النقطة
 
             return back()->withErrors($validator)->withInput();
         }
@@ -314,18 +314,18 @@ class VolunteerController extends Controller
         $branchId = $user ? $user->branch_id : $request->branch_id;
         $activityId = $user ? $user->activity_id : $request->activity_id;
 
-        // Update the volunteer attributes from the validated request data
-        $volunteer->name = $request->input('name', $volunteer->name);
-        $volunteer->phone = $request->input('phone', $volunteer->phone);
-        $volunteer->gender = $request->input('gender', $volunteer->gender);
-        $volunteer->birth_date = $request->input('birth_date', $volunteer->birth_date);
-        $volunteer->vol_date = $request->input('vol_date', $volunteer->vol_date);
-        $volunteer->address = $request->input('address', $volunteer->address);
-        $volunteer->type = $request->input('type', $volunteer->type);
-        $volunteer->section_id = $request->input('section_id', $volunteer->section_id);
-        $volunteer->position = $request->input('position', $volunteer->position);
-        $volunteer->national = $request->input('national', $volunteer->national);
-        $volunteer->notes = $request->input('notes', $volunteer->notes);
+        // Update the volunteer attributes using the null coalescing operator (??)
+        $volunteer->name = $request->name ?? $volunteer->name;
+        $volunteer->phone = $request->phone ?? $volunteer->phone;
+        $volunteer->gender = $request->gender ?? $volunteer->gender;
+        $volunteer->birth_date = $request->birth_date ?? $volunteer->birth_date;
+        $volunteer->vol_date = $request->vol_date ?? $volunteer->vol_date;
+        $volunteer->address = $request->address ?? $volunteer->address;
+        $volunteer->type = $request->type ?? $volunteer->type;
+        $volunteer->section_id = $request->section_id ?? $volunteer->section_id;
+        $volunteer->position = $request->position ?? $volunteer->position;
+        $volunteer->national = $request->national ?? $volunteer->national;
+        $volunteer->notes = $request->notes ?? $volunteer->notes;
 
         // Handle boolean fields explicitly
         // Note: is_active checkbox is missing from the latest HTML form
@@ -344,7 +344,7 @@ class VolunteerController extends Controller
 
 
         // --- DEBUG POINT 3: Inspect the model before saving ---
-        // dd($volunteer); // <-- استخدم هذا إذا مررت من DEBUG POINT 2
+         dd($volunteer); // <-- ألغِ التعليق عن هذا السطر
 
 
         // Save the updated volunteer model
@@ -357,7 +357,7 @@ class VolunteerController extends Controller
         } catch (\Exception $e) {
             // --- DEBUG POINT 5: Log any database errors ---
             Log::error('Error saving volunteer update', ['error' => $e->getMessage(), 'volunteer_id' => $volunteer->id ?? 'N/A']);
-             dd($e->getMessage()); // <-- استخدم هذا إذا حدث خطأ أثناء الحفظ
+             // dd($e->getMessage()); // <-- استخدم هذا إذا حدث خطأ أثناء الحفظ
 
             return back()->with('error', 'حدث خطأ أثناء تحديث بيانات المتطوع. الرجاء المحاولة مرة أخرى.');
         }
