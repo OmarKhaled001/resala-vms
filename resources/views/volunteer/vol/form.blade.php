@@ -195,10 +195,10 @@ const onComplete = () => {
           <div>
             <label for="section_id">اللجنة</label>
             <select name="section_id" id="section_id" v-model="formData.section_id" class="w-full form-select">
-              <option value="">اختر اللجنة</option>
-              <option v-for="section in sections" :key="section.id" :value="section.id">
-                {{ section.name }}
-              </option>
+            <option value="">اختر اللجنة</option>
+            @foreach ($sections as $section)
+                <option value="{{ $section->id }}" {{ old('section_id', $volunteer->section_id ?? '') == $section->id ? 'selected' : '' }}>{{ $section->name }}</option>
+            @endforeach
             </select>
             </div>
 
