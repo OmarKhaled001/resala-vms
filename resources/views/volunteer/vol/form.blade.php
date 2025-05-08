@@ -1,7 +1,11 @@
 <form action="{{ isset($volunteer) ? route('volunteer.vol.update', $volunteer->id) : route('volunteer.vol.store') }}"
     method="POST" enctype="multipart/form-data">
     @csrf
+        @if(isset($volunteer))
 
+        @method('PUT')
+
+    @endif
     <div class="space-y-8">
         <div class="p-6 rounded-lg shadow">
             <h3 class="pb-2 mb-6 text-lg font-semibold ">المعلومات الشخصية</h3>

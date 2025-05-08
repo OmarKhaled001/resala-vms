@@ -46,7 +46,7 @@ Route::middleware(['auth:volunteer'])->group(function () {
             Route::get('edit/{id}', [VolunteerController::class, 'editVolunteer'])->name('edit');
             Route::get('/teem-work', [VolunteerController::class, 'teemWork'])->name('teemWork');
             Route::post('/filter', [VolunteerController::class, 'volunteerFilter'])->name('filter');
-            Route::post('/update/{id}', [VolunteerController::class, 'update'])->name('update');
+            Route::put('/update/{id}', [VolunteerController::class, 'update'])->name('update');
             Route::post('/store', [VolunteerController::class, 'store'])->name('store');
 
 
