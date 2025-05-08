@@ -121,19 +121,23 @@ class VolunteerController extends Controller
     public function store(Request $request)
     {
         // Validation
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:3|regex:/^([\w]+[\s]){2}[\w]+$/u', // Ensures the name is at least three words
+        $validator = Validator::make(<span class="math-inline">request\-\>all\(\), \[
+            'section\_id' \=\> 'nullable\|exists\:sections,id',
+            'name' \=\> 'required\|string\|min\:3\|regex\:/^\(\[\\w\]\+\[\\s\]\)\{2\}\[\\w\]\+</span>/u', // Ensures the name is at least three words
             'phone' => 'required|string|max:15', // Adjust phone number validation as per your requirements
             'gender' => 'required|in:1,2', // 1 for Male, 2 for Female
             'birth_date' => 'required|date',
             'vol_date' => 'required|date',
-            'type' => 'required|string',
-            'section_id' => 'nullable|exists:sections,id', // Assuming 'sections' is a valid table
-            'position' => 'nullable|string',
+            'address' => 'nullable|string|max:255', // Added validation for address
+            'type' => 'required|string|max:255',
+            'password' => 'nullable|string|min:8|confirmed', // Added password validation
+            'position' => 'nullable|string|max:255',
+            'national' => 'nullable|string|max:255', // Added validation for national
             'tshirt' => 'nullable|boolean',
             'camp_48' => 'nullable|boolean',
             'mine_camp' => 'nullable|boolean',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable|string|max:500', // Added max length for notes
+            'is_active' => 'nullable|boolean', // Added validation for is_active
             'profile_photos.*' => 'nullable|mimes:jpeg,png|max:10240', // Adjust as per your requirements
             'id_card' => 'nullable|mimes:jpeg,png|max:10240',
             'donation_receipts.*' => 'nullable|mimes:jpeg,png,pdf|max:10240',
@@ -150,6 +154,8 @@ class VolunteerController extends Controller
             'vol_date.date' => 'تاريخ التطوع يجب أن يكون بتاريخ صحيح',
             'type.required' => 'النوع مطلوب',
             'section_id.exists' => 'اللجنة المحددة غير موجودة',
+            'branch_id.exists' => 'الفرع المحدد غير موجود', // Added message for branch_id
+            'activity_id.exists' => 'النشاط المحدد غير موجود', // Added message for activity_id
             'profile_photos.*.mimes' => 'الصور الشخصية يجب أن تكون بصيغة JPEG أو PNG',
             'profile_photos.*.max' => 'الصور الشخصية يجب أن لا تتجاوز 10MB',
             'id_card.mimes' => 'صورة البطاقة يجب أن تكون بصيغة JPEG أو PNG',
@@ -162,22 +168,31 @@ class VolunteerController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        $user = auth('volunteer')->user();
+        $branchId = $user ? $user->branch_id : $request->branch_id;
+        $activityId = $user ? $user->activity_id : $request->activity_id;
+
         // Store the volunteer
         $volunteer = new Volunteer();
+        $volunteer->branch_id = $branchId;
+        $volunteer->activity_id = $activityId;
         $volunteer->name = $request->name;
         $volunteer->phone = $request->phone;
         $volunteer->gender = $request->gender;
         $volunteer->birth_date = $request->birth_date;
         $volunteer->vol_date = $request->vol_date;
-        $volunteer->type = $request->type;
+        $volunteer->type = $request->type ?? 'داخل المتابعة'; // Allow setting type from request, default if not provided
         $volunteer->section_id = $request->section_id;
         $volunteer->position = $request->position;
+        $volunteer->national = $request->national; // Added national
+        $volunteer->address = $request->address; // Added address
         $volunteer->notes = $request->notes;
-        $volunteer->mine_camp = $request->mine_camp;
-        $volunteer->tshirt = $request->tshirt;
-        $volunteer->camp_48 = $request->camp_48;
+        $volunteer->mine_camp = $request->mine_camp ?? false; // Ensure boolean values have defaults
+        $volunteer->tshirt = $request->tshirt ?? false;
+        $volunteer->camp_48 = $request->camp_48 ?? false;
+        $volunteer->is_active = $request->is_active ?? true; // Default to true
 
-        // Handle file uploads
+        // Handle file uploads using Spatie Media Library
         if ($request->hasFile('profile_photos')) {
             foreach ($request->file('profile_photos') as $file) {
                 $volunteer->addMedia($file)->toMediaCollection('profile_photos');
@@ -185,9 +200,7 @@ class VolunteerController extends Controller
         }
 
         if ($request->hasFile('id_card')) {
-            foreach ($request->file('id_card') as $file) {
-                $volunteer->addMedia($file)->toMediaCollection('id_card');
-            }
+            $volunteer->addMedia($request->file('id_card'))->toMediaCollection('id_card'); // Handle single file upload correctly
         }
 
         if ($request->hasFile('donation_receipts')) {
