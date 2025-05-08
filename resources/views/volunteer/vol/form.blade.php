@@ -80,7 +80,7 @@
 
                 <div>
                     <label for="national" class="block mb-1">الرقم القومي</label>
-                    <input type="text" id="national" name="national" placeholder="ادخل الجنسية"
+                    <input type="text" id="national" name="national" placeholder="ادخل الرقم القومي"
                         class="w-full form-input" value="{{ old('national', $volunteer->national ?? '') }}" />
                     @error('national')
                         <span class="text-sm text-danger">{{ $message }}</span>
