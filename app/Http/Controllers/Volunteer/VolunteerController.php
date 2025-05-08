@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Volunteer;
 use App\Models\Volunteer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator; // Make sure this is imported
+use Illuminate\Support\Facades\Auth; // Make sure this is imported if using auth()
 
 class VolunteerController extends Controller
 {
