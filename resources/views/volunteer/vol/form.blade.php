@@ -1,11 +1,11 @@
 <form action="{{ isset($volunteer) ? route('volunteer.vol.update', $volunteer->id) : route('volunteer.vol.store') }}"
     method="POST" enctype="multipart/form-data">
     @csrf
-        @if(isset($volunteer))
+     @if(isset($volunteer))
 
-        @method('PUT')
+    @method('PUT')
 
-    @endif
+    @endif
     <div class="space-y-8">
         <div class="p-6 rounded-lg shadow">
             <h3 class="pb-2 mb-6 text-lg font-semibold ">المعلومات الشخصية</h3>
@@ -133,6 +133,7 @@
                 <div>
                     <label for="position" class="block mb-1">المنصب</label>
                     <select name="position" id="position" class="w-full form-select">
+                        <option value="">اختار المنصب</option>
                         <option value="مدير"
                             {{ old('position', $volunteer->position ?? '') == 'مدير' ? 'selected' : '' }}>مدير</option>
                         <option value="نائب مدير"
@@ -164,14 +165,7 @@
                         {{ old('mine_camp', $volunteer->mine_camp ?? false) ? 'checked' : '' }} />
                     <span> الميني كامب</span>
                 </label>
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" id="is_active" name="is_active" value="1" class="form-checkbox"
-                           {{ old('is_active', $volunteer->is_active ?? true) ? 'checked' : '' }} />
-                    <span>فعال</span>
-                </label>
-                 @error('is_active')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                 @enderror
+            
             </div>
         </div>
 

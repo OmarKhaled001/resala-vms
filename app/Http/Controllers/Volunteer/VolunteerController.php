@@ -251,20 +251,20 @@ class VolunteerController extends Controller
 
     public function update(Request $request, Volunteer $volunteer)
     {
+        // --- DEBUG POINT 1: Inspect the incoming request data ---
+        // Uncomment the line below to see all data submitted by the form
+        // dd($request->all());
+
         // Validation rules - similar to store, but adjust if any fields are optional on update
         $validator = Validator::make($request->all(), [
             'section_id' => 'nullable|exists:sections,id',
-            // Ensures the name is at least three words
-            // Using 'sometimes' allows the field to be omitted if not being updated,
-            // but if present, it must follow the rules.
-            // If name is always required on update, remove 'sometimes'.
             'name' => 'sometimes|required|string|min:3|regex:/^([\w\p{Arabic}]+[\s]){2}[\w\p{Arabic}]+$/u',
-            'phone' => 'sometimes|required|string|max:15', // Adjust phone number validation
-            'gender' => 'sometimes|required|in:1,2', // 1 for Male, 2 for Female
+            'phone' => 'sometimes|required|string|max:15',
+            'gender' => 'sometimes|required|in:1,2',
             'birth_date' => 'sometimes|required|date',
             'vol_date' => 'sometimes|required|date',
             'address' => 'nullable|string|max:255',
-            'type' => 'nullable|string|max:255', // Remains nullable
+            'type' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
             'national' => 'nullable|string|max:255',
             'tshirt' => 'nullable|boolean',
@@ -272,15 +272,13 @@ class VolunteerController extends Controller
             'mine_camp' => 'nullable|boolean',
             'notes' => 'nullable|string|max:500',
             'is_active' => 'nullable|boolean',
-            // File uploads are typically nullable on update as they might not be changed
             'profile_photos.*' => 'nullable|mimes:jpeg,png|max:10240',
             'id_card' => 'nullable|mimes:jpeg,png|max:10240',
             'donation_receipts.*' => 'nullable|mimes:jpeg,png,pdf|max:10240',
-            // branch_id and activity_id validation
             'branch_id' => 'nullable|exists:branches,id',
             'activity_id' => 'nullable|exists:activities,id',
         ], [
-            // Custom error messages (adjust as needed, some 'required' messages might not apply if using 'sometimes')
+            // Custom error messages
             'name.required' => 'اسم المتطوع مطلوب',
             'name.regex' => 'يجب أن يكون الاسم ثلاثي (يتألف من ثلاثة أجزاء)',
             'phone.required' => 'رقم الهاتف مطلوب',
@@ -302,39 +300,38 @@ class VolunteerController extends Controller
             'donation_receipts.*.max' => 'إيصالات التبرع يجب أن لا تتجاوز 10MB',
         ]);
 
-        // If validation fails, redirect back with errors and input
+        // --- DEBUG POINT 2: Check if validation fails ---
         if ($validator->fails()) {
+            // Log the validation errors to the Laravel log file
+            Log::error('Volunteer update validation failed', $validator->errors()->toArray());
+            // dd($validator->errors()); // Uncomment to see validation errors directly
+
             return back()->withErrors($validator)->withInput();
         }
 
         // Determine branch_id and activity_id if they are being updated or set
-        // This logic might need adjustment based on how branch/activity are managed
-        // If they are only set on creation, you might remove this part or make it conditional
         $user = Auth::guard('volunteer')->user();
         $branchId = $user ? $user->branch_id : $request->branch_id;
         $activityId = $user ? $user->activity_id : $request->activity_id;
 
         // Update the volunteer attributes from the validated request data
-        // Use $request->input() or $request->get() with a default or check has()
-        // to avoid overwriting with null if a field is not in the request (e.g., checkboxes)
-        $volunteer->name = $request->input('name', $volunteer->name); // Only update if present
+        $volunteer->name = $request->input('name', $volunteer->name);
         $volunteer->phone = $request->input('phone', $volunteer->phone);
         $volunteer->gender = $request->input('gender', $volunteer->gender);
         $volunteer->birth_date = $request->input('birth_date', $volunteer->birth_date);
         $volunteer->vol_date = $request->input('vol_date', $volunteer->vol_date);
         $volunteer->address = $request->input('address', $volunteer->address);
-        $volunteer->type = $request->input('type', $volunteer->type); // Update type if present
+        $volunteer->type = $request->input('type', $volunteer->type);
         $volunteer->section_id = $request->input('section_id', $volunteer->section_id);
         $volunteer->position = $request->input('position', $volunteer->position);
         $volunteer->national = $request->input('national', $volunteer->national);
         $volunteer->notes = $request->input('notes', $volunteer->notes);
 
-        // Handle boolean fields explicitly as checkboxes are only in request if checked
+        // Handle boolean fields explicitly
         $volunteer->tshirt = $request->has('tshirt');
         $volunteer->mine_camp = $request->has('mine_camp');
         $volunteer->camp_48 = $request->has('camp_48');
         $volunteer->is_active = $request->has('is_active');
-
 
         // Update branch_id and activity_id if they are in the request
         if ($request->has('branch_id')) {
@@ -343,18 +340,31 @@ class VolunteerController extends Controller
          if ($request->has('activity_id')) {
              $volunteer->activity_id = $request->activity_id;
         }
-        // Alternatively, if branch_id/activity_id are determined by the authenticated user
-        // and should NOT be updated via the form, remove the above two if blocks.
 
+        // --- DEBUG POINT 3: Inspect the model before saving ---
+        // Uncomment the line below to see the volunteer object with updated attributes
+        // dd($volunteer);
 
         // Save the updated volunteer model
-        $volunteer->save();
+        try {
+            $volunteer->save();
+
+            // --- DEBUG POINT 4: Check if save was successful (this line is only reached on success) ---
+            // Log::info('Volunteer updated successfully', ['volunteer_id' => $volunteer->id]);
+
+        } catch (\Exception $e) {
+            // --- DEBUG POINT 5: Log any database errors ---
+            Log::error('Error saving volunteer update', ['error' => $e->getMessage(), 'volunteer_id' => $volunteer->id ?? 'N/A']);
+            // dd($e->getMessage()); // Uncomment to see the database error directly
+
+            return back()->with('error', 'حدث خطأ أثناء تحديث بيانات المتطوع. الرجاء المحاولة مرة أخرى.');
+        }
+
 
         // Handle file uploads using Spatie Media Library
         // New files will replace existing ones for single file collections like 'id_card'
         // New files will be added to existing ones for multiple file collections
 
-        // Upload profile photos (multiple files)
         if ($request->hasFile('profile_photos')) {
             // If you want to replace ALL profile photos, uncomment the next line
             // $volunteer->clearMediaCollection('profile_photos');
@@ -363,14 +373,12 @@ class VolunteerController extends Controller
             }
         }
 
-        // Upload ID card (single file)
         if ($request->hasFile('id_card')) {
             // Clear existing id_card media before adding a new one
             $volunteer->clearMediaCollection('id_card');
             $volunteer->addMedia($request->file('id_card'))->toMediaCollection('id_card');
         }
 
-        // Upload donation receipts (multiple files)
         if ($request->hasFile('donation_receipts')) {
              // If you want to replace ALL donation receipts, uncomment the next line
             // $volunteer->clearMediaCollection('donation_receipts');
