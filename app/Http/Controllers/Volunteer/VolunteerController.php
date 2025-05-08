@@ -76,6 +76,14 @@ class VolunteerController extends Controller
 
     }
 
+    public function editVolunteer($id) {
+        $user = auth('volunteer')->user();
+        $sections = $user->activity->sections;
+        $volunteer = Volunteer::find($id);
+        return view('volunteer.vol.edit',compact('sections','volunteer'));
+
+    }
+
     public function shortStore(Request $request)
     {
         try {
