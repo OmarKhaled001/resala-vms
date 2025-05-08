@@ -95,7 +95,7 @@
                         <td class="text-center">
                             <ul class="flex items-center justify-center gap-2">
                                 <li x-data="modal">
-                                    <a href="{{ route('volunteer.vol.edit', $event->id) }}" x-tooltip="تعديل"
+                                    <a href="{{ route('volunteer.vol.edit', $volunteer->id) }}" x-tooltip="تعديل"
                                         class="hover:text-info">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
