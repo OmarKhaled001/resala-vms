@@ -10,7 +10,7 @@
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 
                 <div>
-                    <label for="name" class="block mb-1">الاسم</label>
+                    <label for="name" class="block mb-1">الاسم<span class="text-red-500">*</span></label>
                     <input type="text" id="name" name="name" placeholder="ادخل اسم المتطوع ثلاثي"
                         class="w-full form-input" value="{{ old('name', $volunteer->name ?? '') }}" required />
                     @error('name')
@@ -19,7 +19,7 @@
                 </div>
 
                 <div>
-                    <label for="phone" class="block mb-1">رقم الهاتف</label>
+                    <label for="phone" class="block mb-1">رقم الهاتف<span class="text-red-500">*</span></label>
                     <input type="text" id="phone" name="phone" placeholder="ادخل رقم الهاتف"
                         class="w-full form-input" value="{{ old('phone', $volunteer->phone ?? '') }}" required />
                     @error('phone')
@@ -28,7 +28,7 @@
                 </div>
 
                 <div>
-                    <label class="block mb-1">النوع (الجنس)</label>
+                    <label class="block mb-1">النوع (الجنس)<span class="text-red-500">*</span></label>
                     <div class="flex items-center gap-4">
                         <label class="flex items-center gap-2">
                             <input type="radio" name="gender" value="1" class="form-radio text-info"
@@ -47,7 +47,7 @@
                 </div>
 
                 <div>
-                    <label for="birth_date" class="block mb-1">تاريخ الميلاد</label>
+                    <label for="birth_date" class="block mb-1">تاريخ الميلاد<span class="text-red-500">*</span></label>
                     <input id="birth_date" name="birth_date" type="date" class="w-full form-input"
                         value="{{ old('birth_date', $volunteer->birth_date ?? '') }}" placeholder="ادخل تاريخ الميلاد"
                         required />
@@ -57,7 +57,7 @@
                 </div>
 
                 <div>
-                    <label for="vol_date" class="block mb-1">تاريخ التطوع</label>
+                    <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-red-500">*</span></label>
                     <input id="vol_date" name="vol_date" type="date" class="w-full form-input"
                         value="{{ old('vol_date', $volunteer->vol_date ?? ($volunteer->volunteer_date ?? '')) }}"
                         placeholder="ادخل تاريخ التطوع" required />
@@ -84,6 +84,8 @@
                     @enderror
                 </div>
 
+                {{-- The 'Type' field is now conditional --}}
+                @if(isset($volunteer))
                 <div>
                     <label for="type" class="block mb-1">الاعمدة</label>
                     <select name="type" id="type" class="w-full form-select">
@@ -109,6 +111,9 @@
                         <span class="text-sm text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
+                @endif
+                {{-- End conditional 'Type' field --}}
+
 
                 <div>
                     <label for="section_id">اللجنة</label>
@@ -174,7 +179,7 @@
                 <div>
                     <label for="profile_photos" class="block mb-2">الصور الشخصية</label>
                     <input type="file" id="profile_photos" name="profile_photos[]" multiple class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                           accept="image/jpeg, image/png" />
+                            accept="image/jpeg, image/png" />
                     <div id="profile_photos_preview_container" class="mt-2 flex flex-wrap gap-2"></div>
                     <button type="button" id="clear_profile_photos" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح الصور الشخصية المحددة</button>
                     @error('profile_photos.*')
@@ -184,7 +189,7 @@
                 <div>
                     <label for="id_card" class="block mb-2">صورة البطاقة</label>
                     <input type="file" id="id_card" name="id_card" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                           accept="image/jpeg, image/png" />
+                            accept="image/jpeg, image/png" />
                     <div id="id_card_preview_container" class="mt-2"></div>
                     <button type="button" id="clear_id_card" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح صورة البطاقة المحددة</button>
                     @error('id_card')
@@ -194,7 +199,7 @@
                 <div>
                     <label for="donation_receipts" class="block mb-2">صور إيصالات التبرعات</label>
                     <input type="file" id="donation_receipts" name="donation_receipts[]" multiple class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                           accept="image/jpeg, image/png, application/pdf" />
+                            accept="image/jpeg, image/png, application/pdf" />
                     <div id="donation_receipts_preview_container" class="mt-2 flex flex-wrap gap-2"></div>
                     <button type="button" id="clear_donation_receipts" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح الإيصالات المحددة</button>
                     @error('donation_receipts.*')
