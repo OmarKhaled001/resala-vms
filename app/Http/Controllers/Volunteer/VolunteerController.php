@@ -238,7 +238,7 @@ class VolunteerController extends Controller
         }
 
         // Redirect after successful storage
-        return redirect()->route('volunteers.index')->with('success', 'تم إضافة المتطوع بنجاح');
+        return redirect()->route('volunteer.vol.index')->with('success', 'تم إضافة المتطوع بنجاح');
     }
 
     public function update(Request $request, Volunteer $volunteer)
