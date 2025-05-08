@@ -130,7 +130,6 @@ class VolunteerController extends Controller
             'vol_date' => 'required|date',
             'address' => 'nullable|string|max:255', // Added validation for address
             'type' => 'required|string|max:255',
-            'password' => 'nullable|string|min:8|confirmed', // Added password validation
             'position' => 'nullable|string|max:255',
             'national' => 'nullable|string|max:255', // Added validation for national
             'tshirt' => 'nullable|boolean',
