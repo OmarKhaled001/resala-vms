@@ -251,24 +251,36 @@ class VolunteerController extends Controller
 
     public function update(Request $request, Volunteer $volunteer)
     {
-        // Validation
+        // Validation rules - similar to store, but adjust if any fields are optional on update
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:3|regex:/^([\w]+[\s]){2}[\w]+$/u', // Ensures the name is at least three words
-            'phone' => 'required|string|max:15',
-            'gender' => 'required|in:1,2',
-            'birth_date' => 'required|date',
-            'vol_date' => 'required|date',
-            'type' => 'required|string',
             'section_id' => 'nullable|exists:sections,id',
-            'position' => 'nullable|string',
+            // Ensures the name is at least three words
+            // Using 'sometimes' allows the field to be omitted if not being updated,
+            // but if present, it must follow the rules.
+            // If name is always required on update, remove 'sometimes'.
+            'name' => 'sometimes|required|string|min:3|regex:/^([\w\p{Arabic}]+[\s]){2}[\w\p{Arabic}]+$/u',
+            'phone' => 'sometimes|required|string|max:15', // Adjust phone number validation
+            'gender' => 'sometimes|required|in:1,2', // 1 for Male, 2 for Female
+            'birth_date' => 'sometimes|required|date',
+            'vol_date' => 'sometimes|required|date',
+            'address' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255', // Remains nullable
+            'position' => 'nullable|string|max:255',
+            'national' => 'nullable|string|max:255',
             'tshirt' => 'nullable|boolean',
             'camp_48' => 'nullable|boolean',
             'mine_camp' => 'nullable|boolean',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable|string|max:500',
+            'is_active' => 'nullable|boolean',
+            // File uploads are typically nullable on update as they might not be changed
             'profile_photos.*' => 'nullable|mimes:jpeg,png|max:10240',
             'id_card' => 'nullable|mimes:jpeg,png|max:10240',
             'donation_receipts.*' => 'nullable|mimes:jpeg,png,pdf|max:10240',
+            // branch_id and activity_id validation
+            'branch_id' => 'nullable|exists:branches,id',
+            'activity_id' => 'nullable|exists:activities,id',
         ], [
+            // Custom error messages (adjust as needed, some 'required' messages might not apply if using 'sometimes')
             'name.required' => 'اسم المتطوع مطلوب',
             'name.regex' => 'يجب أن يكون الاسم ثلاثي (يتألف من ثلاثة أجزاء)',
             'phone.required' => 'رقم الهاتف مطلوب',
@@ -279,8 +291,9 @@ class VolunteerController extends Controller
             'birth_date.date' => 'تاريخ الميلاد يجب أن يكون بتاريخ صحيح',
             'vol_date.required' => 'تاريخ التطوع مطلوب',
             'vol_date.date' => 'تاريخ التطوع يجب أن يكون بتاريخ صحيح',
-            'type.required' => 'النوع مطلوب',
             'section_id.exists' => 'اللجنة المحددة غير موجودة',
+            'branch_id.exists' => 'الفرع المحدد غير موجود',
+            'activity_id.exists' => 'النشاط المحدد غير موجود',
             'profile_photos.*.mimes' => 'الصور الشخصية يجب أن تكون بصيغة JPEG أو PNG',
             'profile_photos.*.max' => 'الصور الشخصية يجب أن لا تتجاوز 10MB',
             'id_card.mimes' => 'صورة البطاقة يجب أن تكون بصيغة JPEG أو PNG',
@@ -289,45 +302,85 @@ class VolunteerController extends Controller
             'donation_receipts.*.max' => 'إيصالات التبرع يجب أن لا تتجاوز 10MB',
         ]);
 
+        // If validation fails, redirect back with errors and input
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        // Update the volunteer
-        $volunteer->name = $request->name;
-        $volunteer->phone = $request->phone;
-        $volunteer->gender = $request->gender;
-        $volunteer->birth_date = $request->birth_date;
-        $volunteer->vol_date = $request->vol_date;
-        $volunteer->type = $request->type;
-        $volunteer->section_id = $request->section_id;
-        $volunteer->position = $request->position;
-        $volunteer->notes = $request->notes;
-        $volunteer->mine_camp = $request->mine_camp;
-        $volunteer->tshirt = $request->tshirt;
-        $volunteer->camp_48 = $request->camp_48;
+        // Determine branch_id and activity_id if they are being updated or set
+        // This logic might need adjustment based on how branch/activity are managed
+        // If they are only set on creation, you might remove this part or make it conditional
+        $user = Auth::guard('volunteer')->user();
+        $branchId = $user ? $user->branch_id : $request->branch_id;
+        $activityId = $user ? $user->activity_id : $request->activity_id;
 
-        // Handle file uploads
+        // Update the volunteer attributes from the validated request data
+        // Use $request->input() or $request->get() with a default or check has()
+        // to avoid overwriting with null if a field is not in the request (e.g., checkboxes)
+        $volunteer->name = $request->input('name', $volunteer->name); // Only update if present
+        $volunteer->phone = $request->input('phone', $volunteer->phone);
+        $volunteer->gender = $request->input('gender', $volunteer->gender);
+        $volunteer->birth_date = $request->input('birth_date', $volunteer->birth_date);
+        $volunteer->vol_date = $request->input('vol_date', $volunteer->vol_date);
+        $volunteer->address = $request->input('address', $volunteer->address);
+        $volunteer->type = $request->input('type', $volunteer->type); // Update type if present
+        $volunteer->section_id = $request->input('section_id', $volunteer->section_id);
+        $volunteer->position = $request->input('position', $volunteer->position);
+        $volunteer->national = $request->input('national', $volunteer->national);
+        $volunteer->notes = $request->input('notes', $volunteer->notes);
+
+        // Handle boolean fields explicitly as checkboxes are only in request if checked
+        $volunteer->tshirt = $request->has('tshirt');
+        $volunteer->mine_camp = $request->has('mine_camp');
+        $volunteer->camp_48 = $request->has('camp_48');
+        $volunteer->is_active = $request->has('is_active');
+
+
+        // Update branch_id and activity_id if they are in the request
+        if ($request->has('branch_id')) {
+             $volunteer->branch_id = $request->branch_id;
+        }
+         if ($request->has('activity_id')) {
+             $volunteer->activity_id = $request->activity_id;
+        }
+        // Alternatively, if branch_id/activity_id are determined by the authenticated user
+        // and should NOT be updated via the form, remove the above two if blocks.
+
+
+        // Save the updated volunteer model
+        $volunteer->save();
+
+        // Handle file uploads using Spatie Media Library
+        // New files will replace existing ones for single file collections like 'id_card'
+        // New files will be added to existing ones for multiple file collections
+
+        // Upload profile photos (multiple files)
         if ($request->hasFile('profile_photos')) {
+            // If you want to replace ALL profile photos, uncomment the next line
+            // $volunteer->clearMediaCollection('profile_photos');
             foreach ($request->file('profile_photos') as $file) {
                 $volunteer->addMedia($file)->toMediaCollection('profile_photos');
             }
         }
 
+        // Upload ID card (single file)
         if ($request->hasFile('id_card')) {
-            foreach ($request->file('id_card') as $file) {
-                $volunteer->addMedia($file)->toMediaCollection('id_card');
-            }
+            // Clear existing id_card media before adding a new one
+            $volunteer->clearMediaCollection('id_card');
+            $volunteer->addMedia($request->file('id_card'))->toMediaCollection('id_card');
         }
 
+        // Upload donation receipts (multiple files)
         if ($request->hasFile('donation_receipts')) {
+             // If you want to replace ALL donation receipts, uncomment the next line
+            // $volunteer->clearMediaCollection('donation_receipts');
             foreach ($request->file('donation_receipts') as $file) {
                 $volunteer->addMedia($file)->toMediaCollection('donation_receipts');
             }
         }
-        $volunteer->save();
 
-        return redirect()->route('volunteers.index')->with('success', 'تم تعديل بيانات المتطوع بنجاح');
+        // Redirect after successful update
+        return redirect()->route('volunteer.vol.index')->with('success', 'تم تحديث بيانات المتطوع بنجاح');
     }
 
 }
