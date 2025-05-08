@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator; // Make sure this is imported
 use Illuminate\Support\Facades\Auth; // Make sure this is imported if using auth()
+use Illuminate\Support\Facades\Log; // Import Log facade
 
 class VolunteerController extends Controller
 {
