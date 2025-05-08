@@ -1,9 +1,10 @@
-<form action="{{ isset($volunteer) ? route('volunteer.vol.update', $volunteer->id) : route('volunteer.vol.store') }}"
+<form action="{{ isset($volunteer) ? route('volunteer.vol.update') : route('volunteer.vol.store') }}"
     method="POST" enctype="multipart/form-data">
     @csrf
      @if(isset($volunteer))
 
-    @method('PUT')
+     <input type="hidden" name="id" value="$volunteer->id">
+
 
     @endif
     <div class="space-y-8">
