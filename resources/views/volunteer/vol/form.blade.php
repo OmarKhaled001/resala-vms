@@ -62,7 +62,7 @@
                 <div>
                     <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-red-500">*</span></label>
                     <input id="vol_date" name="vol_date" type="date" class="w-full form-input"
-                        value="{{ old('vol_date', $volunteer->vol_date ?? ($volunteer->volunteer_date ?? '')) }}"
+                        value="{{ old('vol_date', $volunteer->vol_date ?? ($volunteer->vol_date ?? '')) }}"
                         placeholder="ادخل تاريخ التطوع" required />
                     @error('vol_date')
                         <span class="text-sm text-red-500">{{ $message }}</span>
