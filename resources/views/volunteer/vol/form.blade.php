@@ -3,7 +3,7 @@
     @csrf
      @if(isset($volunteer))
 
-     <input type="hidden" name="id" value="$volunteer->id">
+     <input type="hidden" name="id" value="{{$volunteer->id}}">
 
 
     @endif
