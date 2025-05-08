@@ -121,9 +121,9 @@ class VolunteerController extends Controller
     public function store(Request $request)
     {
         // Validation
-        $validator = Validator::make(<span class="math-inline">request\-\>all\(\), \[
-            'section\_id' \=\> 'nullable\|exists\:sections,id',
-            'name' \=\> 'required\|string\|min\:3\|regex\:/^\(\[\\w\]\+\[\\s\]\)\{2\}\[\\w\]\+</span>/u', // Ensures the name is at least three words
+        $validator = Validator::make(request()->all(), [ // تم إزالة علامات HTML من هنا
+            'section_id' => 'nullable|exists:sections,id',
+            'name' => 'required|string|min:3|regex:/^([\w]+[\s]){2}[\w]+$/u', // Ensures the name is at least three words
             'phone' => 'required|string|max:15', // Adjust phone number validation as per your requirements
             'gender' => 'required|in:1,2', // 1 for Male, 2 for Female
             'birth_date' => 'required|date',
