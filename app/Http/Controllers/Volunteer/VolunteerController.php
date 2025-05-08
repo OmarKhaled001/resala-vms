@@ -250,7 +250,7 @@ class VolunteerController extends Controller
         return redirect()->route('volunteer.vol.index')->with('success', 'تم إضافة المتطوع بنجاح');
     }
 
-    public function update(Request $request, Volunteer $volunteer)
+    public function update(Request $request)
     {
         // --- DEBUG POINT 1: Inspect the incoming request data ---
         // dd($request->all()); // <-- تم التحقق من هذه النقطة
@@ -315,7 +315,7 @@ class VolunteerController extends Controller
         $activityId = $user ? $user->activity_id : $request->activity_id;
         $volunteer =    Volunteer::find($request->id);
         // Update the volunteer attributes from the validated request data
-        $volunteer->name = $request->name ?? $volunteer->name ;
+        $volunteer->name = $request->input('name', $volunteer->name);
         $volunteer->phone = $request->input('phone', $volunteer->phone);
         $volunteer->gender = $request->input('gender', $volunteer->gender);
         $volunteer->birth_date = $request->input('birth_date', $volunteer->birth_date);
