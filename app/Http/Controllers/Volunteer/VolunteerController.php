@@ -253,7 +253,7 @@ class VolunteerController extends Controller
     public function update(Request $request, Volunteer $volunteer)
     {
         // --- DEBUG POINT 1: Inspect the incoming request data ---
-        // dd($request->all()); // <-- تم التحقق من هذه النقطة
+        dd($request->all()); // <-- تم التحقق من هذه النقطة
 
         // Validation rules - similar to store, but adjust if any fields are optional on update
         $validator = Validator::make($request->all(), [
