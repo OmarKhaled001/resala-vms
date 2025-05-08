@@ -304,7 +304,7 @@ class VolunteerController extends Controller
         if ($validator->fails()) {
             // Log the validation errors to the Laravel log file
             Log::error('Volunteer update validation failed', $validator->errors()->toArray());
-            // dd($validator->errors()); // Uncomment to see validation errors directly
+            dd($validator->errors()); // Uncomment to see validation errors directly
 
             return back()->withErrors($validator)->withInput();
         }
