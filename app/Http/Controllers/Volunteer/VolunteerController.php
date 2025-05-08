@@ -252,8 +252,7 @@ class VolunteerController extends Controller
     public function update(Request $request, Volunteer $volunteer)
     {
         // --- DEBUG POINT 1: Inspect the incoming request data ---
-        // Uncomment the line below to see all data submitted by the form
-        // dd($request->all());
+        // dd($request->all()); // <-- تم التحقق من هذه النقطة
 
         // Validation rules - similar to store, but adjust if any fields are optional on update
         $validator = Validator::make($request->all(), [
@@ -271,6 +270,7 @@ class VolunteerController extends Controller
             'camp_48' => 'nullable|boolean',
             'mine_camp' => 'nullable|boolean',
             'notes' => 'nullable|string|max:500',
+            // is_active validation is here, but the field is missing from the latest form HTML
             'is_active' => 'nullable|boolean',
             'profile_photos.*' => 'nullable|mimes:jpeg,png|max:10240',
             'id_card' => 'nullable|mimes:jpeg,png|max:10240',
@@ -302,9 +302,8 @@ class VolunteerController extends Controller
 
         // --- DEBUG POINT 2: Check if validation fails ---
         if ($validator->fails()) {
-            // Log the validation errors to the Laravel log file
             Log::error('Volunteer update validation failed', $validator->errors()->toArray());
-            dd($validator->errors()); // Uncomment to see validation errors directly
+             dd($validator->errors()); // <-- ألغِ التعليق عن هذا السطر
 
             return back()->withErrors($validator)->withInput();
         }
@@ -328,10 +327,11 @@ class VolunteerController extends Controller
         $volunteer->notes = $request->input('notes', $volunteer->notes);
 
         // Handle boolean fields explicitly
+        // Note: is_active checkbox is missing from the latest HTML form
         $volunteer->tshirt = $request->has('tshirt');
         $volunteer->mine_camp = $request->has('mine_camp');
         $volunteer->camp_48 = $request->has('camp_48');
-        $volunteer->is_active = $request->has('is_active');
+        $volunteer->is_active = $request->has('is_active'); // This will always be false if the checkbox is missing
 
         // Update branch_id and activity_id if they are in the request
         if ($request->has('branch_id')) {
@@ -341,47 +341,42 @@ class VolunteerController extends Controller
              $volunteer->activity_id = $request->activity_id;
         }
 
+
         // --- DEBUG POINT 3: Inspect the model before saving ---
-        // Uncomment the line below to see the volunteer object with updated attributes
-        // dd($volunteer);
+        // dd($volunteer); // <-- استخدم هذا إذا مررت من DEBUG POINT 2
+
 
         // Save the updated volunteer model
         try {
             $volunteer->save();
 
             // --- DEBUG POINT 4: Check if save was successful (this line is only reached on success) ---
-            // Log::info('Volunteer updated successfully', ['volunteer_id' => $volunteer->id]);
+            Log::info('Volunteer updated successfully', ['volunteer_id' => $volunteer->id]);
 
         } catch (\Exception $e) {
             // --- DEBUG POINT 5: Log any database errors ---
             Log::error('Error saving volunteer update', ['error' => $e->getMessage(), 'volunteer_id' => $volunteer->id ?? 'N/A']);
-            // dd($e->getMessage()); // Uncomment to see the database error directly
+             dd($e->getMessage()); // <-- استخدم هذا إذا حدث خطأ أثناء الحفظ
 
             return back()->with('error', 'حدث خطأ أثناء تحديث بيانات المتطوع. الرجاء المحاولة مرة أخرى.');
         }
 
 
         // Handle file uploads using Spatie Media Library
-        // New files will replace existing ones for single file collections like 'id_card'
-        // New files will be added to existing ones for multiple file collections
-
         if ($request->hasFile('profile_photos')) {
-            // If you want to replace ALL profile photos, uncomment the next line
-            // $volunteer->clearMediaCollection('profile_photos');
+            // $volunteer->clearMediaCollection('profile_photos'); // Uncomment to replace all
             foreach ($request->file('profile_photos') as $file) {
                 $volunteer->addMedia($file)->toMediaCollection('profile_photos');
             }
         }
 
         if ($request->hasFile('id_card')) {
-            // Clear existing id_card media before adding a new one
             $volunteer->clearMediaCollection('id_card');
             $volunteer->addMedia($request->file('id_card'))->toMediaCollection('id_card');
         }
 
         if ($request->hasFile('donation_receipts')) {
-             // If you want to replace ALL donation receipts, uncomment the next line
-            // $volunteer->clearMediaCollection('donation_receipts');
+             // $volunteer->clearMediaCollection('donation_receipts'); // Uncomment to replace all
             foreach ($request->file('donation_receipts') as $file) {
                 $volunteer->addMedia($file)->toMediaCollection('donation_receipts');
             }
