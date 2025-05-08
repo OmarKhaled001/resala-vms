@@ -344,7 +344,7 @@ class VolunteerController extends Controller
 
 
         // --- DEBUG POINT 3: Inspect the model before saving ---
-         dd($volunteer); // <-- ألغِ التعليق عن هذا السطر
+        //  dd($volunteer);
 
 
         // Save the updated volunteer model
