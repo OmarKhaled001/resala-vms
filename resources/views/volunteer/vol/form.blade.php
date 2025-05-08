@@ -1,320 +1,288 @@
-<form action="{{ isset($volunteer) ? route('volunteer.vol.update') : route('volunteer.vol.store') }}"
-    method="POST" enctype="multipart/form-data">
-    @csrf
-     @if(isset($volunteer))
+<script setup lang="ts">
+import { ref, reactive, computed, watch } from 'vue';
+import { FormWizard, TabContent } from 'vue3-form-wizard';
+import 'vue3-form-wizard/dist/style.css';
 
-     <input type="hidden" name="id" value="{{$volunteer->id}}">
-
-
-    @endif
-    <div class="space-y-8">
-        <div class="p-6 rounded-lg shadow">
-            <h3 class="pb-2 mb-6 text-lg font-semibold ">المعلومات الشخصية</h3>
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-
-                <div>
-                    <label for="name" class="block mb-1">الاسم<span class="text-danger">*</span></label>
-                    <input type="text" id="name" name="name" placeholder="ادخل اسم المتطوع ثلاثي"
-                        class="w-full form-input" value="{{ old('name', $volunteer->name ?? '') }}" required />
-                    @error('name')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="phone" class="block mb-1">رقم الهاتف<span class="text-danger">*</span></label>
-                    <input type="text" id="phone" name="phone" placeholder="ادخل رقم الهاتف"
-                        class="w-full form-input" value="{{ old('phone', $volunteer->phone ?? '') }}" required />
-                    @error('phone')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block mb-1">النوع (الجنس)<span class="text-danger">*</span></label>
-                    <div class="flex items-center gap-4">
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="gender" value="1" class="form-radio text-info"
-                                {{ old('gender', $volunteer->gender ?? '') == 1 ? 'checked' : '' }} required />
-                            <span>ذكر</span>
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="gender" value="2" class="form-radio text-danger"
-                                {{ old('gender', $volunteer->gender ?? '') == 2 ? 'checked' : '' }} required />
-                            <span>أنثى</span>
-                        </label>
-                    </div>
-                    @error('gender')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="birth_date" class="block mb-1">تاريخ الميلاد<span class="text-danger">*</span></label>
-                    <input id="birth_date" name="birth_date" type="date" class="w-full form-input"
-                        value="{{ old('birth_date', $volunteer->birth_date ?? '') }}" placeholder="ادخل تاريخ الميلاد"
-                        required />
-                    @error('birth_date')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-danger">*</span></label>
-                    <input id="vol_date" name="vol_date" type="date" class="w-full form-input"
-                        value="{{ old('vol_date', $volunteer->vol_date ??'') }}"
-                        placeholder="ادخل تاريخ التطوع" required />
-                    @error('vol_date')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="address" class="block mb-1">العنوان</label>
-                    <input type="text" id="address" name="address" placeholder="ادخل العنوان"
-                        class="w-full form-input" value="{{ old('address', $volunteer->address ?? '') }}" />
-                    @error('address')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="national" class="block mb-1">الرقم القومي</label>
-                    <input type="text" id="national" name="national" placeholder="ادخل الرقم القومي"
-                        class="w-full form-input" value="{{ old('national', $volunteer->national ?? '') }}" />
-                    @error('national')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                {{-- The 'Type' field is now conditional --}}
-                @if(isset($volunteer))
-                <div>
-                    <label for="type" class="block mb-1">الاعمدة</label>
-                    <select name="type" id="type" class="w-full form-select">
-                        <option value="مسئول" {{ old('type', $volunteer->type ?? '') == 'مسئول' ? 'selected' : '' }}>
-                            مسئول</option>
-                        <option value="مشروع مسئول"
-                            {{ old('type', $volunteer->type ?? '') == 'مشروع مسئول' ? 'selected' : '' }}>مشروع مسئول
-                        </option>
-                        <option value="مسئول مستقيل"
-                            {{ old('type', $volunteer->type ?? '') == 'مسئول مستقيل' ? 'selected' : '' }}>مسئول مستقيل
-                        </option>
-                        <option value="مشروع مسئول مستقيل"
-                            {{ old('type', $volunteer->type ?? '') == 'مشروع مسئول مستقيل' ? 'selected' : '' }}>مشروع
-                            مسئول مستقيل</option>
-                        <option value="داخل المتابعة"
-                            {{ old('type', $volunteer->type ?? '') == 'داخل المتابعة' ? 'selected' : '' }}>داخل
-                            المتابعة</option>
-                        <option value="خارج المتابعة"
-                            {{ old('type', $volunteer->type ?? '') == 'خارج المتابعة' ? 'selected' : '' }}>خارج
-                            المتابعة</option>
-                    </select>
-                    @error('type')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-                @endif
-                {{-- End conditional 'Type' field --}}
-
-
-                <div>
-                    <label for="section_id">اللجنة</label>
-                    <select name="section_id" id="section_id" class="w-full form-select">
-                        <option value="">اختر اللجنة</option>
-                        @foreach ($sections as $section)
-                            <option value="{{ $section->id }}" {{ old('section_id', $volunteer->section_id ?? '') == $section->id ? 'selected' : '' }}>{{ $section->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('section_id')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="position" class="block mb-1">المنصب</label>
-                    <select name="position" id="position" class="w-full form-select">
-                        <option value="">اختار المنصب</option>
-                        <option value="مدير"
-                            {{ old('position', $volunteer->position ?? '') == 'مدير' ? 'selected' : '' }}>مدير</option>
-                        <option value="نائب مدير"
-                            {{ old('position', $volunteer->position ?? '') == 'نائب مدير' ? 'selected' : '' }}>نائب
-                            مدير</option>
-                        <option value="عضو"
-                            {{ old('position', $volunteer->position ?? '') == 'عضو' ? 'selected' : '' }}>عضو</option>
-                    </select>
-                    @error('position')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                </div>
-
-            <div class="flex flex-wrap items-center gap-6 my-4">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" id="tshirt" name="tshirt" value="1" class="form-checkbox"
-                        {{ old('tshirt', $volunteer->tshirt ?? false) ? 'checked' : '' }} />
-                    <span> تيشيرت</span>
-                </label>
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" id="camp_48" name="camp_48" value="1" class="form-checkbox"
-                        {{ old('camp_48', $volunteer->camp_48 ?? false) ? 'checked' : '' }} />
-                    <span> كامب 48</span>
-                </label>
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" id="mine_camp" name="mine_camp" value="1" class="form-checkbox"
-                        {{ old('mine_camp', $volunteer->mine_camp ?? false) ? 'checked' : '' }} />
-                    <span> الميني كامب</span>
-                </label>
-            
-            </div>
-        </div>
-
-        <div class="p-6 rounded-lg shadow">
-            <h3 class="pb-2 mb-6 text-lg font-semibold ">الوسائط والمرفقات</h3>
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div>
-                    <label for="profile_photos" class="block mb-2">الصور الشخصية</label>
-                    <input type="file" id="profile_photos" name="profile_photos[]" multiple class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            accept="image/jpeg, image/png" />
-                    <div id="profile_photos_preview_container" class="mt-2 flex flex-wrap gap-2"></div>
-                    <button type="button" id="clear_profile_photos" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح الصور الشخصية المحددة</button>
-                    @error('profile_photos.*')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-                <div>
-                    <label for="id_card" class="block mb-2">صورة البطاقة</label>
-                    <input type="file" id="id_card" name="id_card" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            accept="image/jpeg, image/png" />
-                    <div id="id_card_preview_container" class="mt-2"></div>
-                    <button type="button" id="clear_id_card" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح صورة البطاقة المحددة</button>
-                    @error('id_card')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-                <div>
-                    <label for="donation_receipts" class="block mb-2">صور إيصالات التبرعات</label>
-                    <input type="file" id="donation_receipts" name="donation_receipts[]" multiple class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            accept="image/jpeg, image/png, application/pdf" />
-                    <div id="donation_receipts_preview_container" class="mt-2 flex flex-wrap gap-2"></div>
-                    <button type="button" id="clear_donation_receipts" class="mt-2 text-sm text-red-600 hover:text-red-800" style="display:none;">مسح الإيصالات المحددة</button>
-                    @error('donation_receipts.*')
-                        <span class="text-sm text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-        <div class="p-6 rounded-lg shadow">
-            <h3 class="pb-2 mb-4 text-lg font-semibold ">ملاحظات إضافية</h3>
-            <div>
-                <label for="notes" class="block mb-2">ملاحظات</label>
-                <textarea id="notes" name="notes" rows="4" class="w-full form-textarea"
-                    placeholder="اكتب ملاحظات الحدث والتفاصيل الإضافية إن وجد">{{ old('notes', $volunteer->notes ?? '') }}</textarea>
-                @error('notes')
-                    <span class="text-sm text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-        </div>
-    </div>
-    <button type="submit" class="mt-6 btn btn-primary ltr:ml-4 rtl:mr-4">
-        {{ isset($volunteer) ? 'تحديث' : 'اضافة' }}
-    </button>
-
-</form>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    function setupFileInput(inputId, previewContainerId, clearButtonId, isMultiple) {
-        const fileInput = document.getElementById(inputId);
-        const previewContainer = document.getElementById(previewContainerId);
-        const clearButton = document.getElementById(clearButtonId);
-
-        if (!fileInput || !previewContainer || !clearButton) {
-            // console.warn(`Initialization failed: One or more elements not found for input ID ${inputId}. Ensure IDs in HTML match those in JavaScript.`);
-            return;
-        }
-
-        fileInput.addEventListener('change', function(event) {
-            // Clear previous previews explicitly by removing child elements
-            while (previewContainer.firstChild) {
-                // Revoke object URL if the child was an image using it
-                const imgElement = previewContainer.firstChild.querySelector('img');
-                if (imgElement && imgElement.src.startsWith('blob:')) {
-                    URL.revokeObjectURL(imgElement.src);
-                }
-                previewContainer.removeChild(previewContainer.firstChild);
-            }
-
-            const files = event.target.files;
-
-            if (files.length === 0) {
-                clearButton.style.display = 'none';
-                return;
-            }
-
-            clearButton.style.display = 'inline-block';
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const filePreviewWrapper = document.createElement('div');
-                filePreviewWrapper.className = 'inline-flex flex-col items-center p-2 border rounded-md shadow-sm max-w-[120px]'; // Added max-width for consistency
-
-                let objectURL = null;
-
-                if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    objectURL = URL.createObjectURL(file);
-                    img.src = objectURL;
-                    img.className = 'h-24 w-24 object-contain rounded-md'; // Changed to object-contain
-                    // img.onload = () => URL.revokeObjectURL(objectURL); // Revoke on load can be problematic if element is removed before load
-                    filePreviewWrapper.appendChild(img);
-                } else if (file.type === 'application/pdf') {
-                    const pdfIconContainer = document.createElement('div');
-                    pdfIconContainer.className = 'h-24 w-24 flex items-center justify-center bg-gray-100 rounded-md text-gray-500';
-                    pdfIconContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V8.414a1 1 0 00-.293-.707l-4.586-4.586A1 1 0 0011.586 2H4zm7 6a1 1 0 011-1h.01a1 1 0 110 2H12a1 1 0 01-1-1zM9 9a1 1 0 00-1 1v4a1 1 0 102 0V10a1 1 0 00-1-1z" clip-rule="evenodd" /></svg><span class="mt-1 text-xs">PDF</span>';
-                    filePreviewWrapper.appendChild(pdfIconContainer);
-                } else {
-                    const genericPreview = document.createElement('div');
-                    genericPreview.className = 'h-24 w-24 flex flex-col items-center justify-center bg-gray-100 rounded-md text-gray-500 text-sm p-1';
-                    genericPreview.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg><span>ملف</span>';
-                    filePreviewWrapper.appendChild(genericPreview);
-                }
-
-                const fileName = document.createElement('p');
-                fileName.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
-                fileName.className = 'text-xs mt-1 text-center break-all'; // break-all for long names
-                filePreviewWrapper.appendChild(fileName);
-
-                // Store the objectURL with the element for later cleanup if it's an image
-                if (objectURL) {
-                    filePreviewWrapper.dataset.objectURL = objectURL;
-                }
-
-                previewContainer.appendChild(filePreviewWrapper);
-
-                if (!isMultiple) break;
-            }
-        });
-
-        clearButton.addEventListener('click', function() {
-            fileInput.value = null;
-            // Clear previews and revoke URLs
-            while (previewContainer.firstChild) {
-                const wrapper = previewContainer.firstChild;
-                if (wrapper.dataset && wrapper.dataset.objectURL) {
-                    URL.revokeObjectURL(wrapper.dataset.objectURL);
-                }
-                previewContainer.removeChild(wrapper);
-            }
-            clearButton.style.display = 'none';
-        });
-    }
-
-    // Initialize for each file input
-    setupFileInput('profile_photos', 'profile_photos_preview_container', 'clear_profile_photos', true);
-    setupFileInput('id_card', 'id_card_preview_container', 'clear_id_card', false);
-    setupFileInput('donation_receipts', 'donation_receipts_preview_container', 'clear_donation_receipts', true);
+// Define props
+const props = defineProps({
+  volunteer: {
+    type: Object,
+    default: null, // Default to null for create mode
+  },
+  sections: {
+    type: Array,
+    default: () => [], // Default to empty array
+  },
 });
+
+// Define data using reactive
+const formData = reactive({
+  id: props.volunteer?.id || null,
+  name: props.volunteer?.name || '',
+  phone: props.volunteer?.phone || '',
+  gender: props.volunteer?.gender || null, // Use null for initial state or 1/2
+  birth_date: props.volunteer?.birth_date || '',
+  vol_date: props.volunteer?.vol_date || '',
+  address: props.volunteer?.address || '',
+  national: props.volunteer?.national || '',
+  type: props.volunteer?.type || '',
+  section_id: props.volunteer?.section_id || '',
+  position: props.volunteer?.position || '',
+  tshirt: props.volunteer?.tshirt == 1, // Convert boolean-like values
+  camp_48: props.volunteer?.camp_48 == 1,
+  mine_camp: props.volunteer?.mine_camp == 1,
+  // File inputs will be handled differently, not via v-model directly for simplicity here
+  // profile_photos: null,
+  // id_card: null,
+  // donation_receipts: null,
+  notes: props.volunteer?.notes || '',
+});
+
+// Computed property for button text
+const submitButtonText = computed(() => {
+  return props.volunteer ? 'تحديث' : 'اضافة';
+});
+
+// Handle form submission
+const onComplete = () => {
+  console.log('Form completed and ready to submit');
+  console.log('Form Data:', formData);
+
+  // Here you would typically send the formData to your backend API
+  // using something like Axios.
+  // Example using Axios:
+  /*
+  const url = props.volunteer
+    ? '/api/volunteer/' + formData.id // Adjust API endpoint
+    : '/api/volunteer'; // Adjust API endpoint
+
+  const method = props.volunteer ? 'PUT' : 'POST'; // Or POST with _method=PUT
+
+  // Need to handle file uploads separately, potentially with FormData
+  const submitFormData = new FormData();
+  for (const key in formData) {
+    submitFormData.append(key, formData[key]);
+  }
+  // Append files if they were selected - requires handling the file input change event
+  // Example (assuming you have refs or state for files):
+  // if (profilePhotos.value) {
+  //   for (const file of profilePhotos.value) {
+  //     submitFormData.append('profile_photos[]', file);
+  //   }
+  // }
+  // if (idCard.value) {
+  //   submitFormData.append('id_card', idCard.value);
+  // }
+  // if (donationReceipts.value) {
+  //    for (const file of donationReceipts.value) {
+  //     submitFormData.append('donation_receipts[]', file);
+  //   }
+  // }
+
+
+  axios({
+    method: method,
+    url: url,
+    data: submitFormData, // Use FormData for files
+    headers: {
+      'Content-Type': 'multipart/form-data', // Essential for file uploads
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // If using CSRF tokens
+    }
+  })
+  .then(response => {
+    console.log('Submission successful:', response.data);
+    // Redirect or show success message
+  })
+  .catch(error => {
+    console.error('Submission failed:', error.response.data);
+    // Handle errors - display validation errors
+  });
+  */
+
+  // alert('Form submitted!'); // Placeholder alert
+};
+
+// Error handling for demonstration - in a real app, this comes from backend API
+// const errors = ref({});
+// function hasError(field) {
+//   return errors.value[field] && errors.value[field].length > 0;
+// }
+// function getErrorMessage(field) {
+//   return errors.value[field] ? errors.value[field][0] : '';
+// }
+
+// Note: File input handling with previews is complex in Vue and is omitted here.
+// You would typically use refs or handle file changes manually to store files
+// and potentially generate preview URLs using URL.createObjectURL.
+// Clearing files would involve setting the file input value to null and clearing previews.
+// The original JavaScript snippet is a good starting point if you adapt it for Vue's lifecycle.
+
 </script>
+
+<template>
+  <form-wizard color="#4361ee" class="circle" @on-complete="onComplete">
+
+    <tab-content title="المعلومات الشخصية">
+      <div class="p-6 rounded-lg shadow">
+        <h3 class="pb-2 mb-6 text-lg font-semibold ">المعلومات الشخصية</h3>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+          <div>
+            <label for="name" class="block mb-1">الاسم<span class="text-danger">*</span></label>
+            <input type="text" id="name" name="name" v-model="formData.name" placeholder="ادخل اسم المتطوع ثلاثي"
+              class="w-full form-input" required />
+            </div>
+
+          <div>
+            <label for="phone" class="block mb-1">رقم الهاتف<span class="text-danger">*</span></label>
+            <input type="text" id="phone" name="phone" v-model="formData.phone" placeholder="ادخل رقم الهاتف"
+              class="w-full form-input" required />
+            </div>
+
+          <div>
+            <label class="block mb-1">النوع (الجنس)<span class="text-danger">*</span></label>
+            <div class="flex items-center gap-4">
+              <label class="flex items-center gap-2">
+                <input type="radio" name="gender" value="1" v-model="formData.gender" class="form-radio text-info" required />
+                <span>ذكر</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="gender" value="2" v-model="formData.gender" class="form-radio text-danger" required />
+                <span>أنثى</span>
+              </label>
+            </div>
+            </div>
+
+          <div>
+            <label for="birth_date" class="block mb-1">تاريخ الميلاد<span class="text-danger">*</span></label>
+            <input id="birth_date" name="birth_date" type="date" v-model="formData.birth_date" class="w-full form-input"
+              placeholder="ادخل تاريخ الميلاد" required />
+            </div>
+
+          <div>
+            <label for="vol_date" class="block mb-1">تاريخ التطوع<span class="text-danger">*</span></label>
+            <input id="vol_date" name="vol_date" type="date" v-model="formData.vol_date" class="w-full form-input"
+              placeholder="ادخل تاريخ التطوع" required />
+            </div>
+
+          <div>
+            <label for="address" class="block mb-1">العنوان</label>
+            <input type="text" id="address" name="address" v-model="formData.address" placeholder="ادخل العنوان"
+              class="w-full form-input" />
+            </div>
+
+          <div>
+            <label for="national" class="block mb-1">الرقم القومي</label>
+            <input type="text" id="national" name="national" v-model="formData.national" placeholder="ادخل الرقم القومي"
+              class="w-full form-input" />
+            </div>
+
+          {{-- The 'Type' field is conditional --}}
+          <div v-if="props.volunteer">
+            <label for="type" class="block mb-1">الاعمدة</label>
+            <select name="type" id="type" v-model="formData.type" class="w-full form-select">
+              <option value="مسئول">مسئول</option>
+              <option value="مشروع مسئول">مشروع مسئول</option>
+              <option value="مسئول مستقيل">مسئول مستقيل</option>
+              <option value="مشروع مسئول مستقيل">مشروع مسئول مستقيل</option>
+              <option value="داخل المتابعة">داخل المتابعة</option>
+              <option value="خارج المتابعة">خارج المتابعة</option>
+            </select>
+            </div>
+          {{-- End conditional 'Type' field --}}
+
+
+          <div>
+            <label for="section_id">اللجنة</label>
+            <select name="section_id" id="section_id" v-model="formData.section_id" class="w-full form-select">
+              <option value="">اختر اللجنة</option>
+              <option v-for="section in sections" :key="section.id" :value="section.id">
+                {{ section.name }}
+              </option>
+            </select>
+            </div>
+
+          <div>
+            <label for="position" class="block mb-1">المنصب</label>
+            <select name="position" id="position" v-model="formData.position" class="w-full form-select">
+              <option value="">اختار المنصب</option>
+              <option value="مدير">مدير</option>
+              <option value="نائب مدير">نائب مدير</option>
+              <option value="عضو">عضو</option>
+            </select>
+            </div>
+
+        </div>
+
+        <div class="flex flex-wrap items-center gap-6 my-4">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="tshirt" name="tshirt" value="1" v-model="formData.tshirt" class="form-checkbox" />
+            <span> تيشيرت</span>
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="camp_48" name="camp_48" value="1" v-model="formData.camp_48" class="form-checkbox" />
+            <span> كامب 48</span>
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="mine_camp" name="mine_camp" value="1" v-model="formData.mine_camp" class="form-checkbox" />
+            <span> الميني كامب</span>
+          </label>
+
+        </div>
+      </div>
+    </tab-content>
+
+    <tab-content title="الوسائط والمرفقات">
+      <div class="p-6 rounded-lg shadow">
+        <h3 class="pb-2 mb-6 text-lg font-semibold ">الوسائط والمرفقات</h3>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div>
+            <label for="profile_photos" class="block mb-2">الصور الشخصية</label>
+            <input type="file" id="profile_photos" name="profile_photos[]" multiple
+              class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              accept="image/jpeg, image/png"
+              />
+            </div>
+          <div>
+            <label for="id_card" class="block mb-2">صورة البطاقة</label>
+            <input type="file" id="id_card" name="id_card"
+              class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              accept="image/jpeg, image/png" />
+            </div>
+          <div>
+            <label for="donation_receipts" class="block mb-2">صور إيصالات التبرعات</label>
+            <input type="file" id="donation_receipts" name="donation_receipts[]" multiple
+              class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              accept="image/jpeg, image/png, application/pdf" />
+            </div>
+        </div>
+      </div>
+    </tab-content>
+
+    <tab-content title="ملاحظات إضافية">
+      <div class="p-6 rounded-lg shadow">
+        <h3 class="pb-2 mb-4 text-lg font-semibold ">ملاحظات إضافية</h3>
+        <div>
+          <label for="notes" class="block mb-2">ملاحظات</label>
+          <textarea id="notes" name="notes" v-model="formData.notes" rows="4" class="w-full form-textarea"
+            placeholder="اكتب ملاحظات الحدث والتفاصيل الإضافية إن وجد"></textarea>
+          </div>
+      </div>
+    </tab-content>
+
+    <input type="hidden" name="id" v-if="formData.id" :value="formData.id">
+
+     <template #finish-button>
+       <button class="btn btn-primary ltr:ml-4 rtl:mr-4">
+         {{ submitButtonText }}
+       </button>
+     </template>
+
+  </form-wizard>
+</template>
+
+<style scoped>
+/* Add any component-specific styles here if needed */
+/* Keep your existing form-input, form-radio, form-checkbox, form-select, form-textarea styles */
+/* Ensure vue3-form-wizard styles are imported globally or in your main app file */
+</style>
