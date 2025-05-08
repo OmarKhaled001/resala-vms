@@ -23,7 +23,7 @@
         </li>
     </ul>
     <div class="flex flex-wrap mt-3 mb-5 ">
-        <a href="{{ route('volunteer.event.create') }}" class="ml-3 btn btn-outline-primary">إضافة متطوع</a>
+        <a href="{{ route('volunteer.vol.create') }}" class="ml-3 btn btn-outline-primary">إضافة متطوع</a>
         <!-- button -->
         <div x-data="modal">
             <div class="flex items-center justify-center ml-3">
@@ -46,7 +46,6 @@
                     </svg>
                 </button>
             </div>
-            @include('volunteer.event.charts')
         </div> --}}
         <a href="{{ route('volunteer.vol.index') }}" class="ml-3 btn btn-primary">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +109,6 @@
                                                 stroke="currentColor" stroke-width="1.5"></path>
                                         </svg>
                                     </a>
-                                    @include('branch.event.change-status')
 
                                 </li>
                                 <li x-data="modal">
