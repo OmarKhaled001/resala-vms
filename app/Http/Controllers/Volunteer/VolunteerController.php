@@ -253,7 +253,7 @@ class VolunteerController extends Controller
     {
         // --- DEBUG POINT 1: Inspect the incoming request data ---
         // Uncomment the line below to see all data submitted by the form
-        // dd($request->all());
+        dd($request->all());
 
         // Validation rules - similar to store, but adjust if any fields are optional on update
         $validator = Validator::make($request->all(), [
