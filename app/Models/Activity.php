@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Activity extends Model
 {
     use HasFactory;
 
     protected $table = 'activities';
-    
+
     public $timestamps = true;
 
     protected $fillable = [
@@ -18,7 +19,7 @@ class Activity extends Model
         'username',
         'email',
         'password',
-    
+
     ];
 
     protected $hidden = [
@@ -31,25 +32,25 @@ class Activity extends Model
     ];
 
     public function branches()
-    { 
-        return $this->belongsToMany(Branch::class ,'branch_activity')->withTimestamps(); 
+    {
+        return $this->belongsToMany(Branch::class, 'branch_activity')->withTimestamps();
     }
 
     public function sections()
-    { 
-        return $this->belongsToMany(Section::class ,'activity_section')->withTimestamps(); 
+    {
+        return $this->belongsToMany(Section::class, 'activity_section')->withTimestamps();
     }
-    
+
     public function volunteers()
     {
         return $this->hasMany(Volunteer::class);
     }
-    
+
     function groups()
     {
         return $this->hasMany(Group::class);
     }
-    
+
     function events()
     {
         return $this->hasMany(Event::class);
@@ -67,34 +68,33 @@ class Activity extends Model
 
     public function getMasaolCount()
     {
-        return $this->volunteers()->where('type','مسئول')
-        ->count() ?? null ;
+        return $this->volunteers()->where('type', 'مسئول')
+            ->count() ?? null;
     }
-    
+
     public function getMashroaaMasaolCount()
     {
-        return $this->volunteers()->where('type','مشروع مسئول')
-        ->count()?? null ;
+        return $this->volunteers()->where('type', 'مشروع مسئول')
+            ->count() ?? null;
     }
     public function getMasaolCountAttributeCount()
     {
-        return $this->volunteers()->where('type','مسئول')
-        ->whereHas('events')
-        ->count() ;
+        return $this->volunteers()->where('type', 'مسئول')
+            ->whereHas('events')
+            ->count();
     }
-    
+
     public function getMashroaaMasaolCountAttributeCount()
     {
-        return $this->volunteers()->where('type','مشروع مسئول')
-        ->whereHas('events')
-        ->count() ;
+        return $this->volunteers()->where('type', 'مشروع مسئول')
+            ->whereHas('events')
+            ->count();
     }
 
     public function getMasaolCountAttribute()
     {
-        $count = $this->getMasaolCount(); 
-        if ($count == 0) 
-        { 
+        $count = $this->getMasaolCount();
+        if ($count == 0) {
             return 0;
         }
         return  round(($this->volunteers()
@@ -102,14 +102,13 @@ class Activity extends Model
             ->get()
             ->sum(function ($volunteer) {
                 return $volunteer->capped_monthly_participation;
-            })  /  $count),2);
+            })  /  $count), 2);
     }
-    
+
     public function getMashroaaMasaolCountAttribute()
     {
-        $count = $this->getMashroaaMasaolCount(); 
-        if ($count == 0) 
-        { 
+        $count = $this->getMashroaaMasaolCount();
+        if ($count == 0) {
             return 0;
         }
         return round(($this->volunteers()
@@ -117,7 +116,7 @@ class Activity extends Model
             ->get()
             ->sum(function ($volunteer) {
                 return $volunteer->capped_monthly_participation;
-            }) /  $count),2);
+            }) /  $count), 2);
     }
     public function getNewVolunteersCount()
     {
@@ -127,5 +126,15 @@ class Activity extends Model
             ->whereBetween('vol_date', [$startOfMonth, $endOfMonth])
             ->count();
     }
-    
+
+    public function getPendingEventsCountAttribute()
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        return $this->events()
+            ->where('status', 'pending')
+            ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
+            ->count();
+    }
 }

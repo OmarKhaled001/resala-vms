@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\HasMedia;
 
 class Volunteer extends Authenticatable implements HasMedia
 {
-    use HasFactory  ,HasRolesAndPermissions , InteractsWithMedia;
+    use HasFactory, HasRolesAndPermissions, InteractsWithMedia;
 
     protected $table = 'volunteers';
 
@@ -73,13 +73,13 @@ class Volunteer extends Authenticatable implements HasMedia
     public function events()
     {
         return $this->belongsToMany(Event::class, 'event_volunteer')
-                    ->withPivot('tshirt', 'event_date')
-                    ->withTimestamps();
+            ->withPivot('tshirt', 'event_date')
+            ->withTimestamps();
     }
 
     public function getTypeBadgeClass()
     {
-        return match($this->type) {
+        return match ($this->type) {
             'مسئول' => 'bg-success',
             'مشروع مسئول' => 'badge-outline-info',
             'داخل المتابعة' => 'badge-outline-warning',
@@ -95,11 +95,9 @@ class Volunteer extends Authenticatable implements HasMedia
         $startOfMonth = now()->startOfMonth();
         $endOfMonth = now()->endOfMonth();
         return $this->events()
-        ->whereBetween('event_volunteer.event_date', [$startOfMonth, $endOfMonth])
-        ->distinct('event_volunteer.event_date')
-        ->count() ;
-
-
+            ->whereBetween('event_volunteer.event_date', [$startOfMonth, $endOfMonth])
+            ->distinct('event_volunteer.event_date')
+            ->count();
     }
 
 
@@ -125,7 +123,4 @@ class Volunteer extends Authenticatable implements HasMedia
     {
         return $this->morphMany(CommentRead::class, 'reader');
     }
-
-
-
 }

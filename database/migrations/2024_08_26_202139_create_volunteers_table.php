@@ -14,20 +14,20 @@ return new class extends Migration
         Schema::create('volunteers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('branch_id')
-            ->nullable()
-            ->references('id')
-            ->on('branches')
-            ->cascadeOnDelete();
+                ->nullable()
+                ->references('id')
+                ->on('branches')
+                ->cascadeOnDelete();
             $table->foreignId('section_id')
-            ->nullable()
-            ->references('id')
-            ->on('sections')
-            ->cascadeOnDelete();
+                ->nullable()
+                ->references('id')
+                ->on('sections')
+                ->cascadeOnDelete();
             $table->foreignId('activity_id')
-            ->nullable()
-            ->references('id')
-            ->on('activities')
-            ->onDelete('set null');
+                ->nullable()
+                ->references('id')
+                ->on('activities')
+                ->onDelete('set null');
             $table->string('name');
             $table->string('username')->nullable()->unique();
             $table->string('position')->nullable();
@@ -43,10 +43,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('notes')->nullable();
-            $table->boolean('tshirt')->nullable();
-            $table->boolean('mine_camp')->nullable();
-            $table->boolean('camp_48')->nullable();
-            $table->boolean('is_active')->nullable();
+            $table->boolean('tshirt')->default(0);
+            $table->boolean('mine_camp')->default(0);
+            $table->boolean('camp_48')->default(0);
+            $table->boolean('is_active')->default(0);
+            $table->boolean('is_admin')->default(0);
             $table->timestamps();
         });
     }

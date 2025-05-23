@@ -9,76 +9,77 @@ use Illuminate\Routing\Controller;
 
 class PageController extends Controller
 {
-    
+
     public function index()
     {
         $user = auth('volunteer')->user();
         $sections = $user->activity->sections;
-    
+
         $startOfMonth = now()->startOfMonth()->toDateString();
         $endOfMonth = now()->endOfMonth()->toDateString();
-    
+
         // جلب الأحداث لهذا الشهر
         $events = Event::where('branch_id', $user->branch_id)
             ->where('activity_id', $user->activity_id)
+            ->where('status', 'conforming')
             ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
             ->with(['volunteers', 'contribution'])
             ->orderBy('event_date', 'desc')
             ->get();
-    
+
         // جلب جميع المتطوعين من نوع "مسئول" و "مشروع مسئول"
         $volunteersMasaol = Volunteer::where('branch_id', $user->branch_id)
             ->where('activity_id', $user->activity_id)
             ->where('type', 'مسئول')
             ->get();
-    
+
         $volunteersMashroaaMasaol = Volunteer::where('branch_id', $user->branch_id)
             ->where('activity_id', $user->activity_id)
             ->where('type', 'مشروع مسئول')
             ->get();
-    
+
         // حساب عدد المتطوعين من نوع "مسئول" و "مشروع مسئول"
         $volunteersMasaolCount = $volunteersMasaol->count();
         $volunteersMashroaaMasaolCount = $volunteersMashroaaMasaol->count();
-    
+
         // عدد "مسئول" و "مشروع مسئول" الذين شاركوا في الأحداث
         $volunteersMasaolContributionCount = $volunteersMasaol->filter(function ($volunteer) use ($startOfMonth, $endOfMonth) {
             return $volunteer->events()->whereBetween('events.event_date', [$startOfMonth, $endOfMonth])->exists();
         })->count();
-    
+
         $volunteersMashroaaMasaolContributionCount = $volunteersMashroaaMasaol->filter(function ($volunteer) use ($startOfMonth, $endOfMonth) {
             return $volunteer->events()->whereBetween('events.event_date', [$startOfMonth, $endOfMonth])->exists();
         })->count();
-    
+
         // حساب النسب المئوية
-        $masaolContributionPercentage = $volunteersMasaolCount > 0 
-            ? ($volunteersMasaolContributionCount / $volunteersMasaolCount) * 100 
+        $masaolContributionPercentage = $volunteersMasaolCount > 0
+            ? ($volunteersMasaolContributionCount / $volunteersMasaolCount) * 100
             : 0;
-    
-        $mashroaaMasaolContributionPercentage = $volunteersMashroaaMasaolCount > 0 
-            ? ($volunteersMashroaaMasaolContributionCount / $volunteersMashroaaMasaolCount) * 100 
+
+        $mashroaaMasaolContributionPercentage = $volunteersMashroaaMasaolCount > 0
+            ? ($volunteersMashroaaMasaolContributionCount / $volunteersMashroaaMasaolCount) * 100
             : 0;
-    
+
         // حساب المشاركات الشهرية الفعلية لكل متطوع مع الالتزام بالضوابط
         $masaolContributionSum = $volunteersMasaol->sum(function ($volunteer) {
             return $volunteer->getCappedMonthlyParticipationAttribute();
         });
-    
+
         $mashroaaMasaolContributionSum = $volunteersMashroaaMasaol->sum(function ($volunteer) {
             return $volunteer->getCappedMonthlyParticipationAttribute();
         });
-    
+
         $averagemasaolContribution = $volunteersMasaolCount > 0 ? round($masaolContributionSum / $volunteersMasaolCount, 2) : 0;
         $averagemashroaaMasaolContribution = $volunteersMashroaaMasaolCount > 0 ? round($mashroaaMasaolContributionSum / $volunteersMashroaaMasaolCount, 2) : 0;
-    
+
         $volunteers = Volunteer::where('branch_id', $user->branch_id)
             ->where('activity_id', $user->activity_id)
             ->whereBetween('vol_date', [$startOfMonth, $endOfMonth]);
-    
+
         $totalevents = $events->count();
         $conformingCount = $events->where('status', 'conforming')->count();
         $percentage = $totalevents > 0 ? ($conformingCount / $totalevents) * 100 : 0;
-    
+
         $statistics = [
             'averagemasaolContribution' => $averagemasaolContribution,
             'averagemashroaaMasaolContribution' => $averagemashroaaMasaolContribution,
@@ -99,10 +100,10 @@ class PageController extends Controller
             'unique_volunteers_count' => $events->pluck('volunteers')->flatten()->unique('id')->count(),
             'new_volunteers_count' => $volunteers->count(),
         ];
-    
+
         return view('volunteer.index', compact('statistics', 'percentage'));
     }
-    
+
 
     public function getWeeklyVolunteerStatistics()
     {
@@ -113,6 +114,7 @@ class PageController extends Controller
 
             // Retrieve events for the current volunteer's branch and activity
             $events = Event::where('branch_id', $user->branch_id)
+                ->where('status', 'conforming')
                 ->where('activity_id', $user->activity_id)
                 ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
                 ->with(['volunteers', 'contribution'])

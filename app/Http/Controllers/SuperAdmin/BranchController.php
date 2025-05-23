@@ -15,7 +15,7 @@ class BranchController extends Controller
 {
 
     protected $ActivityLogsService;
-    
+
     public function __construct(ActivityLogsService $ActivityLogsService)
     {
         $this->ActivityLogsService = $ActivityLogsService;
@@ -26,40 +26,37 @@ class BranchController extends Controller
         $this->middleware('permissionMiddleware:update-branch,super_admin')->only('updateBranch');
         $this->middleware('permissionMiddleware:delete-branch,super_admin')->only('destroyBranch');
     }
-    
-    
-    public function allBranch() 
+
+
+    public function allBranch()
     {
         $branches = Branch::all();
-        return view('super_admin.branch.index',compact('branches'));
-        
+        return view('super_admin.branch.index', compact('branches'));
     }
 
-    public function createForm() 
+    public function createForm()
     {
         $activities = Activity::all();
         return view('super_admin.branch.create', compact('activities'));
-        
     }
 
-    public function editForm($id) 
+    public function editForm($id)
     {
         $branch = Branch::find($id);
         $activities = Activity::all();
-        return view('super_admin.branch.edit', compact('branch','activities'));
-        
+        return view('super_admin.branch.edit', compact('branch', 'activities'));
     }
 
     public function storeBranch(BranchRequest $request)
     {
         try {
             $validatedData = $request->validated();
-    
+
             $branch =  new Branch();
             $branch->name = $validatedData['name'];
-            $branch->username = $validatedData['username'] ;
-            $branch->email = $validatedData['email'] ;
-            $branch->password = bcrypt($validatedData['password']) ?? bcrypt($validatedData['username']) ;
+            $branch->username = $validatedData['username'];
+            $branch->email = $validatedData['email'];
+            $branch->password = bcrypt($validatedData['password']) ?? bcrypt($validatedData['username']);
             $branch->save();
             $causer = auth('super_admin')->user();
             $this->ActivityLogsService->insert([
@@ -70,11 +67,11 @@ class BranchController extends Controller
                 'event' => 'إضافة',
                 'guard' => 'super_admin',
             ]);
-            
+
             $branch->activities()->sync($validatedData['activity_id']);
-             $groups = collect($validatedData['activity_id'])->map(function ($activity_id) use ($branch) {
-            $activity = Activity::find($activity_id);
-            return [
+            $groups = collect($validatedData['activity_id'])->map(function ($activity_id) use ($branch) {
+                $activity = Activity::find($activity_id);
+                return [
                     'name' => $branch->name . ' - ' . $activity->name,
                     'branch_id' => $branch->id,
                     'activity_id' => $activity_id,
@@ -82,7 +79,7 @@ class BranchController extends Controller
                 ];
             });
 
-        Group::insert($groups->toArray());
+            Group::insert($groups->toArray());
 
             return redirect()->route('super_admin.branch.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
@@ -94,16 +91,16 @@ class BranchController extends Controller
     {
         try {
             $validatedData = $request->validated();
-    
-            $branch = Branch::find($request->id) ;
+
+            $branch = Branch::find($request->id);
             $branch->name = $validatedData['name'];
             $branch->username = $validatedData['username'];
             $branch->email = $validatedData['email'];
-    
+
             if (!empty($validatedData['password'])) {
                 $branch->password = bcrypt($validatedData['password']);
             }
-    
+
             $branch->save();
             $causer = auth('super_admin')->user();
             $this->ActivityLogsService->insert([
@@ -114,11 +111,11 @@ class BranchController extends Controller
                 'event' => 'تعديل',
                 'guard' => 'super_admin',
             ]);
-            
+
             $branch->activities()->sync($validatedData['activity_id']);
-             $groups = collect($validatedData['activity_id'])->map(function ($activity_id) use ($branch) {
-            $activity = Activity::find($activity_id);
-            return [
+            $groups = collect($validatedData['activity_id'])->map(function ($activity_id) use ($branch) {
+                $activity = Activity::find($activity_id);
+                return [
                     'name' => $branch->name . ' - ' . $activity->name,
                     'branch_id' => $branch->id,
                     'activity_id' => $activity_id,
@@ -126,13 +123,13 @@ class BranchController extends Controller
                 ];
             });
 
-        Group::insert($groups->toArray());
+            Group::insert($groups->toArray());
             return redirect()->route('super_admin.branch.index')->with('success', 'تم الإنشاء بنجاح!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإنشاء: ' . $e->getMessage());
         }
     }
-    
+
     public function destroyBranch($id)
     {
         try {
@@ -147,12 +144,10 @@ class BranchController extends Controller
                 'event' => 'حذف',
                 'guard' => 'super_admin',
             ]);
-            
+
             return response()->json(['success' => 'تم حذف اللجنة بنجاح!']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'حدث خطأ أثناء حذف اللجنة: ' . $e->getMessage()], 500);
         }
     }
-    
-
 }

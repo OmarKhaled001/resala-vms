@@ -21,7 +21,7 @@ class Branch extends Authenticatable
         'phone',
         'email',
         'password',
-    
+
     ];
 
     protected $hidden = [
@@ -32,10 +32,10 @@ class Branch extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
     public function activities()
-    { 
-        return $this->belongsToMany(Activity::class ,'branch_activity')->withTimestamps(); 
+    {
+        return $this->belongsToMany(Activity::class, 'branch_activity')->withTimestamps();
     }
 
     function volunteers()
@@ -52,7 +52,7 @@ class Branch extends Authenticatable
     {
         return $this->hasMany(Event::class);
     }
-    
+
     public function authoredComments()
     {
         return $this->morphMany(Comment::class, 'authorable');
@@ -68,10 +68,9 @@ class Branch extends Authenticatable
         $startOfMonth = now()->startOfMonth();
         $endOfMonth = now()->endOfMonth();
         return $this->events()
-        ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
-        ->count() ;
-      
-
+            ->where('status', 'conforming')
+            ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
+            ->count();
     }
 
     public function getMonthlyEventConformingCount()
@@ -79,9 +78,9 @@ class Branch extends Authenticatable
         $startOfMonth = now()->startOfMonth();
         $endOfMonth = now()->endOfMonth();
         return $this->events()
-        ->where('status','conforming')
-        ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
-        ->count() ;
+            ->where('status', 'conforming')
+            ->whereBetween('event_date', [$startOfMonth, $endOfMonth])
+            ->count();
     }
 
     public function getNewVolunteersCount()

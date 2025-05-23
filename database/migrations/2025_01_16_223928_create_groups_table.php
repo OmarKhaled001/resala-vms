@@ -14,16 +14,17 @@ return new class extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->foreignId('branch_id')
-            ->nullable()
-            ->references('id')
-            ->on('branches')
-            ->cascadeOnDelete();
+                ->nullable()
+                ->references('id')
+                ->on('branches')
+                ->cascadeOnDelete();
             $table->foreignId('activity_id')
-            ->nullable()
-            ->references('id')
-            ->on('activities')
-            ->onDelete('set null');
-            $table->enum('class', ['first', 'second', 'third' , 'fourth','graduate']);
+                ->nullable()
+                ->references('id')
+                ->on('activities')
+                ->onDelete('set null');
+            $table->enum('class', ['first', 'second', 'third', 'fourth', 'graduate']);
+            $table->string('name')->nullable();
             $table->string('category')->nullable();
             $table->boolean('is_active')->nullable();
             $table->timestamps();

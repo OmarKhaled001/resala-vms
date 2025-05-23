@@ -18,17 +18,18 @@ class ActivitySeeder extends Seeder
 
         DB::table('activities')->delete();
 
-            $activities = [
-            [
-                'name' => 'معارض داخلي',
-                'username' => 'maared_khariji',
-                'email' => 'maared_khariji@vms.app',
-                'password' => Hash::make('maared'),
-            ],
+        $activities = [
+
             [
                 'name' => 'معارض داخلي',
                 'username' => 'maared_dakhli',
                 'email' => 'maared_dakhli@vms.app',
+                'password' => Hash::make('maared'),
+            ],
+            [
+                'name' => 'معارض خارجي',
+                'username' => 'maared_khariji',
+                'email' => 'maared_khariji@vms.app',
                 'password' => Hash::make('maared'),
             ],
             [
@@ -45,7 +46,7 @@ class ActivitySeeder extends Seeder
             ],
             [
                 'name' => 'قوافل طبية',
-                'username' => 'qwafel_tebia', 
+                'username' => 'qwafel_tebia',
                 'email' => 'qwafel_tebia@vms.app',
                 'password' => Hash::make('qwafel_tebia'),
             ],
@@ -57,19 +58,19 @@ class ActivitySeeder extends Seeder
             ],
             [
                 'name' => 'مساعدات',
-                'username' => 'musaadat', 
+                'username' => 'musaadat',
                 'email' => 'musaadat@vms.app',
                 'password' => Hash::make('musaadat'),
             ],
             [
                 'name' => 'قوافل خارجي',
-                'username' => 'qwafel_khariji', 
+                'username' => 'qwafel_khariji',
                 'email' => 'qwafel_khariji@vms.app',
                 'password' => Hash::make('qwafel_khariji'),
             ],
             [
                 'name' => 'قوافل داخلي',
-                'username' => 'qwafel_dakhli', 
+                'username' => 'qwafel_dakhli',
                 'email' => 'qwafel_dakhli@vms.app',
                 'password' => Hash::make('qwafel_dakhli'),
             ],

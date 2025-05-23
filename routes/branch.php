@@ -18,4 +18,3 @@ Route::middleware(['auth:branch'])->group(function () {
     Route::post('/event/change/{id}',   [EventController::class, 'changeEventStatus'])->name('change.events.status');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
-
