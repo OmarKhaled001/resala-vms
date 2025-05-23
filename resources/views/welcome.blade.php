@@ -3,9 +3,23 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>لوحة التحكم </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>VMS - Resala</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- SEO Meta Tags -->
+<meta name="description" content="نظام VMS لإدارة المتطوعين هو نظام شامل يُستخدم لتنظيم ومتابعة أعمال التطوع بجمعية رسالة للأعمال الخيرية. يتيح إدارة الفِرق، الفعاليات، وتسجيل المتطوعين بكفاءة.">
+<meta name="keywords" content="VMS, نظام إدارة المتطوعين, جمعية رسالة, أعمال خيرية, التطوع, إدارة المتطوعين, أنظمة تطوعية, رسالة, volunteer management system, volunteer system, نظام تطوع">
+<meta name="author" content="جمعية رسالة للأعمال الخيرية">
+
+<!-- Open Graph Meta Tags (للسوشيال ميديا) -->
+<meta property="og:title" content="نظام إدارة المتطوعين - VMS | جمعية رسالة">
+<meta property="og:description" content="نظام احترافي لإدارة المتطوعين وتنظيم فعاليات العمل التطوعي بجمعية رسالة.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://your-website-url.com">
+<meta property="og:image" content="https://your-website-url.com/images/vms-og-image.jpg">
+
     <link rel="icon" type="image/x-icon" href="favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -31,9 +31,7 @@
             <div class="mb-5">
 
 
-                <form action=>
-                    @csrf
-                </form>
+            @include('volunteer.vol.form')
 
             </div>
 
